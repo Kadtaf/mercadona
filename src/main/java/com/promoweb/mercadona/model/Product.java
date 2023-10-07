@@ -1,10 +1,12 @@
 package com.promoweb.mercadona.model;
 
-import javax.persistence.*;
-import java.util.List;
+
+import jakarta.persistence.*;
+
+
 
 @Entity
-public class Produit {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +18,7 @@ public class Produit {
     private String image;
 
     @ManyToOne
-    @JoinColumn(name = "categorie_id")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @ManyToOne
@@ -24,17 +26,19 @@ public class Produit {
     private Promotion promotion;
 
     @ManyToOne
-    @JoinTable(
-            name = "admins_produits",
-            joinColumns = @JoinColumn(name = "produit_id"),
-            inverseJoinColumns = @JoinColumn(name = "admins_id")
-    )
-    private List<Admin> admins;
+    @JoinColumn(name = "admin_id")
 
-    public Produit() {
+    private Admin admins;
+
+    public Product() {
     }
 
-    public Produit(String label, String description, double prix, String image, Category category, Promotion promotion) {
+    public Product(String label,
+                   String description,
+                   double prix,
+                   String image,
+                   Category category,
+                   Promotion promotion) {
         this.label = label;
         this.description = description;
         this.prix = prix;
@@ -43,5 +47,68 @@ public class Produit {
         this.promotion = promotion;
     }
 
-    
+    public Long getId() {
+        return id;
+    }
+
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrix() {
+        return prix;
+    }
+
+    public void setPrix(double prix) {
+        this.prix = prix;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "label='" + label + '\'' +
+                ", description='" + description + '\'' +
+                ", prix=" + prix +
+                ", image='" + image + '\'' +
+                ", category=" + category +
+                ", promotion=" + promotion +
+                '}';
+    }
 }
