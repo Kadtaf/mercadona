@@ -1,7 +1,6 @@
 package com.promoweb.mercadona.controller;
 
 
-import com.promoweb.mercadona.model.Admin;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
@@ -54,14 +53,20 @@ public class ProductController {
 
     //Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+            productService.deleteProduct(id);
+            return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+        try {
+            List<Product> products = productService.getAllProducts();
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
+            throw new RuntimeException(errorMessage, e);
+        }
+
     }
 }

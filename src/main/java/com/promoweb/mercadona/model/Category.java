@@ -21,8 +21,10 @@ public class Category {
     public Category() {
     }
 
-    public Category(String label) {
+    public Category(Long id, String label) {
+
         this.label = label;
+        this.id =id;
     }
 
     public Long getId() {

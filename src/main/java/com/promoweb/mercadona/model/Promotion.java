@@ -23,11 +23,12 @@ public class Promotion {
 
 
 
-    public Promotion(LocalDate startDate, LocalDate endDate, double discountPercentage, List<Product> products) {
+    public Promotion(Long id, LocalDate startDate, LocalDate endDate, double discountPercentage) {
+        this.id =id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.discountPercentage = discountPercentage;
-        this.products = products;
+
     }
 
     public Promotion() {

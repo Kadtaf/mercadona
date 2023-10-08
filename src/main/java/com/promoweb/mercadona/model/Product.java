@@ -28,7 +28,7 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "admin_id")
 
-    private Admin admins;
+    private Admin admin;
 
     public Product() {
     }
@@ -38,19 +38,28 @@ public class Product {
                    double prix,
                    String image,
                    Category category,
-                   Promotion promotion) {
+                   Promotion promotion,
+                   Admin admin) {
         this.label = label;
         this.description = description;
         this.prix = prix;
         this.image = image;
         this.category = category;
         this.promotion = promotion;
+        this.admin = admin;
     }
 
     public Long getId() {
         return id;
     }
 
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
 
     public String getLabel() {
         return label;
@@ -109,6 +118,7 @@ public class Product {
                 ", image='" + image + '\'' +
                 ", category=" + category +
                 ", promotion=" + promotion +
+                ", admin=" + admin +
                 '}';
     }
 }

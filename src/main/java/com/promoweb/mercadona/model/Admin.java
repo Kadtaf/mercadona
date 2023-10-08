@@ -15,16 +15,17 @@ public class Admin {
     private String username;
     private String password;
 
-    @OneToMany(mappedBy = "admins")
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Product> products;
 
     public Admin() {
     }
 
-    public Admin(String username, String password, List<Product> products) {
+    public Admin(Long id, String username, String password, List<Product> products) {
+        this.id =id;
         this.username = username;
         this.password = password;
-        this.products = products;
+        this.products= products;
     }
 
     public Long getId() {
