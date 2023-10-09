@@ -3,7 +3,6 @@ package com.promoweb.mercadona.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promoweb.mercadona.MercadonaApplication;
-import com.promoweb.mercadona.model.Admin;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.service.ProductService;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class ProductControllerTest {
     @Test
     public void testCreateProduct() throws Exception {
         //Création d'un objet Product simulé à envoyer dans la requête POST.
-        Product productToCreate = new Product("NewProduct", "NewProduct", 19.99, "newProduct.jpg", null, null, new Admin());
+        Product productToCreate = new Product("NewProduct", "NewProduct", 19.99, "newProduct.jpg", null, null);
 
         //Simulation de la création du produit en utilisant le service productService.
         when(productService.createProduct(any(Product.class))).thenReturn(productToCreate);

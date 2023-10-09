@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Inclut la configuration de logging par défaut de Spring Boot. -->
+    <include resource="org/springframework/boot/logging/logback/default.xml"/>
+
+    <!--  Inclut la configuration de l'appender console.-->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <!-- Définit un motif personnalisé pour l'affichage dans la console. -->
+    <property name="CONSOLE_LOG_PATTERN" value="[%d] [%t\\(%logger\\) : %p] %class.%method\\(%file:%line\\)%n%m%n"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+
+    <!-- Définit le chemin et le nom de fichier pour le fichier de log. -->
+    <property name="LOG_FILE" value="logs/app.log"/>
+
+    <!-- Configure l'appender de fichier avec un rolling policy basé sur la taille et un déclenchement basé sur la taille -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <!-- Définir le modèle de journalisation pour les fichiers .log-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <file>${LOG_FILE}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <!-- Defint le nombre maximum des fichiers .log crées à partir de l'idex 1 jusqu'à 10-->
+            <fileNamePattern>${LOG_FILE}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <!-- Definit le poid maximum d'un fichier log et après il y'aura un dexième crée et ainsi de suite-->
+            <MaxFileSize>10KB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!-- Configure le niveau du logger racine et les appenders associés -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <!-- Configure des niveaux de log spécifiques pour certaines packages du code source -->
+    <logger name="com.promoweb.mercadona.controller" level="DEBUG"/>
+</configuration>

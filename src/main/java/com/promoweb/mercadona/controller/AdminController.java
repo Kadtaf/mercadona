@@ -1,5 +1,6 @@
 package com.promoweb.mercadona.controller;
 
+
 import com.promoweb.mercadona.model.Admin;
 import com.promoweb.mercadona.service.AdminService;
 
@@ -51,12 +52,12 @@ public class AdminController {
 
     //Update
     @PutMapping("/{id}")
-    public ResponseEntity<Admin> updateAdmin(@PathVariable Long id, @RequestBody Admin admin) {
+    public ResponseEntity<Admin> updateUser(@PathVariable Long id, @RequestBody Admin admin) {
         Admin updateAdmin = adminService.updateAdmin(id, admin);
         if (updateAdmin !=null) {
             return ResponseEntity.ok(updateAdmin);
         } else {
-            throw new EntityNotFoundException("L'Administrateur avec l'id : " + id + " n'existe pas");
+            throw new EntityNotFoundException("L'administrateur avec l'id : " + id + " n'existe pas");
         }
     }
 

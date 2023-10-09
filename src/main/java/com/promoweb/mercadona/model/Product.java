@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 
 @Entity
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -27,7 +28,6 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-
     private Admin admin;
 
     public Product() {
@@ -38,15 +38,15 @@ public class Product {
                    double prix,
                    String image,
                    Category category,
-                   Promotion promotion,
-                   Admin admin) {
+                   Promotion promotion
+                   ) {
         this.label = label;
         this.description = description;
         this.prix = prix;
         this.image = image;
         this.category = category;
         this.promotion = promotion;
-        this.admin = admin;
+
     }
 
     public Long getId() {

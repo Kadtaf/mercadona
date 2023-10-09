@@ -2,7 +2,6 @@ package com.promoweb.mercadona.controller;
 
 import com.promoweb.mercadona.MercadonaApplication;
 import com.promoweb.mercadona.model.Admin;
-import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.service.AdminService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +49,6 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.username", is("adminUsername")))
                 .andExpect(jsonPath("$.password", is("adminPassword")));
 
-        verify(adminService, times(1)).getAdminById(adminId);
+            verify(adminService, times(1)).getAdminById(adminId);
     }
 }

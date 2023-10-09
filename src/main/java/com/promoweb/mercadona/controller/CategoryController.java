@@ -2,7 +2,6 @@ package com.promoweb.mercadona.controller;
 
 
 import com.promoweb.mercadona.model.Category;
-import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;

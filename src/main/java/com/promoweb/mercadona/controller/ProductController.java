@@ -1,9 +1,12 @@
 package com.promoweb.mercadona.controller;
 
 
+import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     @Autowired
@@ -67,6 +71,55 @@ public class ProductController {
             String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
             throw new RuntimeException(errorMessage, e);
         }
+    }
 
+    @GetMapping("/promotions")
+    public ResponseEntity<List<Product>> getPromotionalProducts() {
+        try {
+            List<Product> promotionalProducts = productService.getPromotionalProducts();
+            return ResponseEntity.ok(promotionalProducts);
+        } catch (NoProductsFoundException e) {
+
+            logger.warn("Exception lors de la récupération des produits en promotion: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            logger.error("Une erreur s'est produite lors de la récupération des produits en promotion.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/byAdmin/{admin_id}")
+    public ResponseEntity<List<Product>> getProductsByAdmin(@PathVariable Long admin_id) {
+        try {
+            List<Product> productsByAdmin = productService.getProductsByAdmin(admin_id);
+            return ResponseEntity.ok(productsByAdmin);
+        } catch (NoProductsFoundException e) {
+
+            logger.warn("Exception lors de la récupération des produits par admin: {}", e.getMessage());
+            throw new EntityNotFoundException("L'administrateur avec l'id : " + admin_id + " n'existe pas");
+            //return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            logger.error("Une erreur s'est produite lors de la récupération des produits par l'administrateur.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/byCategory/{category_id}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long category_id) {
+        try {
+            List<Product> productsByCategory = productService.getProductsByCategory(category_id);
+            return ResponseEntity.ok(productsByCategory);
+
+        } catch (NoProductsFoundException e) {
+            logger.warn("Exception lors de la récupération des produits par catégorie: {}", e.getMessage());
+            throw new EntityNotFoundException("La category avec l'id : " + category_id + " n'existe pas");
+            //return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            logger.error("Une erreur s'est produite lors de la récupération des produits par catégorie.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

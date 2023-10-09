@@ -49,7 +49,7 @@ public class AdminService {
         if (adminRepository.existsById(id)) {
             adminRepository.deleteById(id);
         }  else {
-            throw new EntityNotFoundException("L'Administrateur avec l'id : " +id + " n'existe pas");
+            throw new EntityNotFoundException("L'administrateur avec l'id : " +id + " n'existe pas");
         }
 
     }

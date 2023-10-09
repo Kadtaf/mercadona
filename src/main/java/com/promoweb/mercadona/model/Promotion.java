@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Table(name = "promotions")
 public class Promotion {
 
     @Id
