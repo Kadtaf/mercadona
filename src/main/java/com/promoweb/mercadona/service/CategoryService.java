@@ -6,7 +6,7 @@ import com.promoweb.mercadona.repository.CategoryRepository;
 import com.promoweb.mercadona.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
+
 import java.util.List;
 
 @Service

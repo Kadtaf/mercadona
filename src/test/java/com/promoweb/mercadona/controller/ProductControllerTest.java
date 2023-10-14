@@ -49,10 +49,10 @@ public class ProductControllerTest {
         when(productService.createProduct(any(Product.class))).thenReturn(productToCreate);
 
         mockMvc.perform(post("/api/products")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(productToCreate)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.label").value("NewProduct"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productToCreate)))
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.label").value("NewProduct"));
 
         //Verification que le service a été appelé avec le produit simulé
         verify(productService, times(1)).createProduct(any(Product.class));

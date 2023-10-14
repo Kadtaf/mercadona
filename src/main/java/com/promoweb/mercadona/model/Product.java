@@ -27,8 +27,8 @@ public class Product {
     private Promotion promotion;
 
     @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Product() {
     }
@@ -39,7 +39,7 @@ public class Product {
                    String image,
                    Category category,
                    Promotion promotion
-                   ) {
+    ) {
         this.label = label;
         this.description = description;
         this.prix = prix;
@@ -53,12 +53,12 @@ public class Product {
         return id;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public User getUser() {
+        return user;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getLabel() {
@@ -118,7 +118,7 @@ public class Product {
                 ", image='" + image + '\'' +
                 ", category=" + category +
                 ", promotion=" + promotion +
-                ", admin=" + admin +
+                ", user=" + user +
                 '}';
     }
 }

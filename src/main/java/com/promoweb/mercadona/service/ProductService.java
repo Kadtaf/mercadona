@@ -75,12 +75,12 @@ public class ProductService {
         return promotionalProducts;
     }
 
-    public List<Product> getProductsByAdmin(Long admin_id) {
-        List<Product> productsByAdmin = productRepository.findByAdminId(admin_id);
-        if (productsByAdmin.isEmpty()) {
-            throw new NoProductsFoundException("Aucun produit trouvé pour l'administrateur avec l'ID : " + admin_id);
+    public List<Product> getProductsByUser(Long user_id) {
+        List<Product> productsByUser = productRepository.findByUserId(user_id);
+        if (productsByUser.isEmpty()) {
+            throw new NoProductsFoundException("Aucun produit trouvé pour l'administrateur avec l'ID : " + user_id);
         }
-        return productsByAdmin;
+        return productsByUser;
     }
 
     public List<Product> getProductsByCategory(Long category_id) {

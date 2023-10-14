@@ -12,7 +12,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByPromotionIsNotNull();
 
-    List<Product> findByAdminId(Long admin_id);
+    List<Product> findByUserId(Long admin_id);
 
     List<Product> findByCategoryId(Long category_id);
 }

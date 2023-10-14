@@ -89,15 +89,15 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/byAdmin/{admin_id}")
-    public ResponseEntity<List<Product>> getProductsByAdmin(@PathVariable Long admin_id) {
+    @GetMapping("/byUser/{user_id}")
+    public ResponseEntity<List<Product>> getProductsByAdmin(@PathVariable Long user_id) {
         try {
-            List<Product> productsByAdmin = productService.getProductsByAdmin(admin_id);
-            return ResponseEntity.ok(productsByAdmin);
+            List<Product> productsByUser = productService.getProductsByUser(user_id);
+            return ResponseEntity.ok(productsByUser);
         } catch (NoProductsFoundException e) {
 
             logger.warn("Exception lors de la récupération des produits par admin: {}", e.getMessage());
-            throw new EntityNotFoundException("L'administrateur avec l'id : " + admin_id + " n'existe pas");
+            throw new EntityNotFoundException("L'administrateur avec l'id : " + user_id + " n'existe pas");
             //return ResponseEntity.notFound().build();
 
         } catch (Exception e) {

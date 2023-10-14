@@ -1,8 +1,9 @@
 package com.promoweb.mercadona.controller;
 
 import com.promoweb.mercadona.MercadonaApplication;
-import com.promoweb.mercadona.model.Admin;
-import com.promoweb.mercadona.service.AdminService;
+import com.promoweb.mercadona.model.User;
+import com.promoweb.mercadona.service.UserService;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+
 
 import java.util.ArrayList;
 
@@ -26,29 +28,29 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MercadonaApplication.class)
 @AutoConfigureMockMvc
-public class AdminControllerTest {
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private AdminService adminService;
+    private UserService userService;
 
     @Test
-    public void testGetAdminById() throws Exception {
-        Long adminId = 1L;
-        Admin mockAdmin = new Admin(adminId, "adminUsername", "adminPassword", new ArrayList<>());
+    public void testGetUserById() throws Exception {
+        Long userId = 1L;
+            User mockUser = new User(userId, "adminUsername", "adminPassword", "ADMIN", new ArrayList<>());
 
-        when(adminService.getAdminById(adminId)).thenReturn(mockAdmin);
+        when(userService.getUserById(userId)).thenReturn(mockUser);
 
         // Utilisez get pour construire la requête
-        MockHttpServletRequestBuilder requestBuilder = get("/api/admins/{id}", adminId);
+        MockHttpServletRequestBuilder requestBuilder = get("/api/users/{id}", userId);
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username", is("adminUsername")))
                 .andExpect(jsonPath("$.password", is("adminPassword")));
 
-            verify(adminService, times(1)).getAdminById(adminId);
+            verify(userService, times(1)).getUserById(userId);
     }
 }

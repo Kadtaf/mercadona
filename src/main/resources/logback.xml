@@ -34,11 +34,11 @@
     </appender>
 
     <!-- Configure le niveau du logger racine et les appenders associés -->
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
 
     <!-- Configure des niveaux de log spécifiques pour certaines packages du code source -->
-    <logger name="com.promoweb.mercadona.controller" level="DEBUG"/>
+
 </configuration>
