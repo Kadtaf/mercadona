@@ -1,10 +1,13 @@
 package com.promoweb.mercadona.model;
 
+import com.promoweb.mercadona.model.Product;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -15,6 +18,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String firstname;
+    private String lastname;
+    private String email;
     private String username;
     private String password;
     private String role;
@@ -39,17 +45,36 @@ public class User implements UserDetails {
         return id;
     }
 
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
     }
 
     public String getPassword() {
@@ -87,6 +112,11 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Retournez une liste d'attributs GrantedAuthority représentant les rôles de l'utilisateur
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+    }
 
     @Override
     public String toString() {
@@ -97,4 +127,3 @@ public class User implements UserDetails {
                 '}';
     }
 }
-

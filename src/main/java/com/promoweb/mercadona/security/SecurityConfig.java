@@ -19,6 +19,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
 
+
     public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
     }
@@ -26,14 +27,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("api/products/all", "api/promotions/all", "api/categories/all").permitAll();
-            auth.requestMatchers("/api/users/all", "api/categories/{id}", "/test/").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers("/api/products/all", "/api/promotions/all", "/api/categories/all", "/webjars/**", "/resources/**").permitAll();
+            auth.requestMatchers("/api/users/**", "/api/categories/**", "/test/**", "/user/formUser", "user/listUser/", "api/users/listUser").hasAnyRole("ADMIN", "SUPER_ADMIN");
             auth.anyRequest().authenticated();
         }).formLogin(Customizer.withDefaults()).build();
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-6 offset-3">
+            <div class="card">
+                <div class="card-header">Nouveau utilisateur</div>
+                <div class="card-body">
+                    <div class="p-3">
+                        <p>Utilisateur mis à jour avec succès :</p>
+                        <p>ID: ${updatedUser.id}</p>
+                        <p>Nom d'utilisateur: ${updatedUser.username}</p>
+                        <form method="PosT" th:action="@{updateUser/{id}}">
+                            <div class="mb-3 mt-3">
+                                <label for="lastname" class="form-label">Nom:</label>
+                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname" th:value="${user.getLastname()}">
+                                <span class="text-danger" th:errors="${user.lastname}" th:value="${user.lastname}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstname" class="form-label">Prenom:</label>
+                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname" th:value="${user.getFirstname()}">
+                                <span class="text-danger" th:errors="${user.firstname}" th:value="${user.firstname}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="text" class="form-control" id="email" placeholder="Email" name="email" th:value="${user.getEmail()}">
+                                <span class="text-danger" th:errors="${user.email}" th:value="${user.email}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Rôle:</label>
+                                <input type="text" class="form-control" id="role" placeholder="role" name="role" th:value="${user.getRole()}">
+                                <span class="text-danger" th:errors="${user.role}" th:value="${user.role}"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur:</label>
+                                <input type="text" class="form-control" id="username" placeholder="Username" name="username" th:value="${user.getUsername()}">
+                                <span class="text-danger" th:errors="${user.username}" th:value="${user.username}"></span>
+                            </div>
+                            <input type="hidden" name="id" th:value="${user.id}" />
+                            <button class="btn btn-success">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

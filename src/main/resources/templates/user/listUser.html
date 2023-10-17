@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="p-3">
+        <div class="card">
+            <div class="card-header">Liste des Utilisateurs</div>
+            <div class="card-body">
+                <!-- Formulaire de recherche -->
+                <form method="GET" th:action="@{index}">
+                    <label>Keyword:</label>
+                    <input type="text" name="keyword" th:value="${keyword}">
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+
+                <!-- Tableau des utilisateurs -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Lastname</th>
+                        <th>Firstname</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Utilisation de th:each pour parcourir la liste d'utilisateurs -->
+                    <tr th:each="u:${users}">
+                        <td th:text="${u.id}"></td>
+                        <td th:text="${u.lastname}"></td>
+                        <td th:text="${u.firstname}"></td>
+                        <td th:text="${u.email}"></td>
+                        <td th:text="${u.role}"></td>
+                        <td th:text="${u.username}"></td>
+                        <td>
+                            <!-- Liens pour supprimer et éditer un utilisateur -->
+                            <div class="d-flex justify-content-between">
+                                <div class="text-center">
+                                    <a onclick="return confirm('Etes vous sure?')"
+                                       th:href="@{delete(id=${u.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                    <span>Delete</span>
+                                </div>
+                                <div class="text-center">
+                                    <a class="btn btn-success ml-4" th:href="@{updateUser(id=${u.id})}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <span>Edit</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a
+                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                                th:href="@{index(page=${status.index}, keyword=${keyword})}"
+                                th:text="${status.index + 1}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
