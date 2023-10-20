@@ -3,10 +3,13 @@ package com.promoweb.mercadona.service;
 import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
+import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.repository.ProductRepository;
 import com.promoweb.mercadona.repository.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -89,6 +92,16 @@ public class ProductService {
             throw new NoProductsFoundException("Aucun produit trouvé dans cette catégory: " + category_id);
         }
         return productsByCategory;
+    }
+
+    public Page<Product> findProductsWithPagination(String kw, Pageable pageable) {
+        if (kw == null || kw.trim().isEmpty()) {
+            // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
+            return productRepository.findAll(pageable);
+        } else {
+            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
+            return productRepository.findByCategoryContains(kw, pageable);
+        }
     }
 
 }

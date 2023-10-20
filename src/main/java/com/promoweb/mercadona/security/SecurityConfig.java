@@ -3,6 +3,7 @@ package com.promoweb.mercadona.security;
 import com.promoweb.mercadona.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,8 +28,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/api/products/all", "/api/promotions/all", "/api/categories/all", "/webjars/**", "/resources/**").permitAll();
-            auth.requestMatchers("/api/users/**", "/api/categories/**", "/test/**", "/user/formUser", "user/listUser/", "api/users/listUser").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.GET, "/api/users/promotions/listPromotion", "/api/users/categories/listCategory", "/webjars/**", "/resources/**").permitAll();
+            auth.requestMatchers(HttpMethod.POST, "/api/users/categories/**", "/api/users/products/**", "/api/users/listUser", "/api/users/promotions/**", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.PUT, "/api/users/categories/**","/api/users/updateUser/**", "/api/users/products/**", "/api/users/index", "/api/users/promotions/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.GET, "/api/users/formUser/**", "/api/users/listUser/**", "/api/users/updateUser/**", "/swagger-ui.html").hasAnyRole("ADMIN", "SUPER_ADMIN");
             auth.anyRequest().authenticated();
         }).formLogin(Customizer.withDefaults()).build();
     }

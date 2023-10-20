@@ -1,67 +1,98 @@
 package com.promoweb.mercadona.controller;
-
-
 import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.service.PromotionService;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-@RestController
-@RequestMapping("/api/promotions")
+
+@Controller
+@RequestMapping("/promotions")
 public class PromotionController {
 
     private final PromotionService promotionService;
 
+    @Autowired
     public PromotionController(PromotionService promotionService) {
         this.promotionService = promotionService;
     }
 
+    @GetMapping("/index")
+    public String index(Model model,
+                        @RequestParam(name = "page", defaultValue = "0") int page,
+                        @RequestParam(name = "size", defaultValue = "4") int size,
+                        @RequestParam(name = "keyword", defaultValue = "") String kw) {
+        // Utilisez votre méthode de recherche promotion avec pagination
+        Page<Promotion> pagePromotions = promotionService.findPromotionsWithPagination(kw, PageRequest.of(page, size));
 
-    // Read
-    @GetMapping("/{id}")
-    public ResponseEntity<Promotion> getPromotionById(@PathVariable Long id) {
+        model.addAttribute("promotions", pagePromotions.getContent());
+        model.addAttribute("pages", new int[pagePromotions.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
+
+        return "/produits/listPromotion";
+    }
+
+
+    @GetMapping("/add")
+    public String showAddPromotionForm(Model model) {
+        model.addAttribute("promotion", new Promotion());
+        return "/produits/addPromotion";
+    }
+
+    @PostMapping("/savePromo")
+    public String addPromotion(@Valid @ModelAttribute("promotion") Promotion promotion, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            return "/produits/addPromotion";
+        }
+        Promotion createdPromotion = promotionService.addPromotion(promotion);
+        model.addAttribute("createdPromotion", createdPromotion);
+        if (createdPromotion != null) {
+            return "redirect:/listPromotion";
+        } else {
+            return "redirect:/listPromotion/add?error";
+        }
+    }
+
+    @GetMapping("/update/{id}")
+    public String showUpdatePromotionForm(@PathVariable Long id, Model model) {
         Promotion promotion = promotionService.getPromotionById(id);
-        if (promotion != null) {
-            return  ResponseEntity.ok(promotion);
-        } else {
-            throw new EntityNotFoundException("La promotion avec l'id : " + id + " n'existe pas");
-        }
+        model.addAttribute("promotion", promotion);
+        return "/produits/updatePromotion";
     }
 
-    // Create
-    @PostMapping
-    public ResponseEntity<Promotion> createPromotion(@RequestBody Promotion promotion) {
-        Promotion createdPromotion = promotionService.createPromotion(promotion);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotion);
-    }
-
-    // Update
-    @PutMapping("/{id}")
-    public ResponseEntity<Promotion> updatePromotion(@PathVariable Long id, @RequestBody Promotion promotion) {
-        Promotion updatedPromotion = promotionService.updatePromotion(id, promotion);
-        if (updatedPromotion !=null) {
-            return ResponseEntity.ok(updatedPromotion);
-        } else {
-            throw new EntityNotFoundException("La promotion avec l'id : " + id + " n'existe pas");
+    @PostMapping("/updatePromotion/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("promotion") Promotion promotion, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/updatePromotion/" + promotion.getId();
         }
 
+        promotionService.updatePromotion(id, promotion);
+
+        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
+        model.addAttribute("promotion", promotion);
+        return "redirect:../index";
     }
 
-    // Delete
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePromotion(@PathVariable Long id) {
+
+    @GetMapping("/delete/{id}")
+    public String deletePromotion(@PathVariable Long id) {
         promotionService.deletePromotion(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/promotions";
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Promotion>> getAllPromotions() {
-        List<Promotion> promotions = promotionService.getAllPromotions();
-        return ResponseEntity.ok(promotions);
+    // Nouvelle méthode pour calculer le pourcentage en fonction du prix du produit
+    @GetMapping("/calculatePercentage/{id}/{productPrice}")
+    @ResponseBody
+    public double calculatePercentage(@PathVariable Long id, @PathVariable double productPrice) {
+        Promotion promotion = promotionService.getPromotionById(id);
+        return promotionService.calculatePercentage(promotion, productPrice);
     }
-
 }

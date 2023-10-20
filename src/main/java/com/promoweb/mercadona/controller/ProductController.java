@@ -8,13 +8,17 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/products")
 public class ProductController {
 
@@ -26,12 +30,46 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/listProducts")
+    public String listAllProducts(Model model,
+                        @RequestParam(name = "page", defaultValue = "0") int page,
+                        @RequestParam(name = "size", defaultValue = "2") int size,
+                        @RequestParam(name = "keyword", defaultValue = "") String kw) {
+
+        // Utilisez votre méthode de recherche produits avec pagination
+            Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
+
+            model.addAttribute("products",  pageProducts.getContent());
+            model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("keyword", kw);
+            return "/produits/catalogue";
+    }
+
+    @GetMapping("/")
+    public String catalogue(){
+        return "redirect:/listProducts";
+    }
+
+    @GetMapping("/allProducts")
+    public String getAllProducts(Model model) {
+        try {
+            List<Product> products = productService.getAllProducts();
+            model.addAttribute("products", products);
+            return "/produits/catalogue";
+        } catch (Exception e) {
+            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
+            throw new RuntimeException(errorMessage, e);
+        }
+    }
+
     //Read
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public Product getProductById(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
         if (product != null) {
-            return  ResponseEntity.ok(product);
+            model.addAttribute("product", product);
+            return  product;
         } else {
             throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
         }
@@ -62,16 +100,6 @@ public class ProductController {
             return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        try {
-            List<Product> products = productService.getAllProducts();
-            return ResponseEntity.ok(products);
-        } catch (Exception e) {
-            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
-            throw new RuntimeException(errorMessage, e);
-        }
-    }
 
     @GetMapping("/promotions")
     public ResponseEntity<List<Product>> getPromotionalProducts() {

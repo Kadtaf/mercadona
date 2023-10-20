@@ -11,40 +11,47 @@
     <div class="row mt-3">
         <div class="col-md-6 offset-3">
             <div class="card">
-                <div class="card-header">Nouveau utilisateur</div>
+                <div class="card-header">Création d'un utilisateur</div>
                 <div class="card-body">
                     <div class="p-3">
-                        <p>Utilisateur mis à jour avec succès :</p>
-                        <p>ID: ${updatedUser.id}</p>
-                        <p>Nom d'utilisateur: ${updatedUser.username}</p>
-                        <form method="PosT" th:action="@{updateUser/{id}}">
+                        <form method="post" th:action="@{saveUser}">
                             <div class="mb-3 mt-3">
                                 <label for="lastname" class="form-label">Nom:</label>
-                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname" th:value="${user.getLastname()}">
+                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname">
                                 <span class="text-danger" th:errors="${user.lastname}" th:value="${user.lastname}"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="firstname" class="form-label">Prenom:</label>
-                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname" th:value="${user.getFirstname()}">
+                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname">
                                 <span class="text-danger" th:errors="${user.firstname}" th:value="${user.firstname}"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" name="email" th:value="${user.getEmail()}">
+                                <input type="text" class="form-control" id="email" placeholder="Email" name="email">
                                 <span class="text-danger" th:errors="${user.email}" th:value="${user.email}"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Rôle:</label>
-                                <input type="text" class="form-control" id="role" placeholder="role" name="role" th:value="${user.getRole()}">
+                                <input type="text" class="form-control" id="role" placeholder="role" name="role">
                                 <span class="text-danger" th:errors="${user.role}" th:value="${user.role}"></span>
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label">Nom d'utilisateur:</label>
-                                <input type="text" class="form-control" id="username" placeholder="Username" name="username" th:value="${user.getUsername()}">
+                                <input type="text" class="form-control" id="username" placeholder="Username" name="username">
                                 <span class="text-danger" th:errors="${user.username}" th:value="${user.username}"></span>
                             </div>
-                            <input type="hidden" name="id" th:value="${user.id}" />
-                            <button class="btn btn-success">Update</button>
+                            <div class="mb-3 mt-3">
+                                <label for="password" class="form-label">Mot de passe:</label>
+                                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                                <span class="text-danger" th:errors="${user.password}" th:value="${user.password}"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" name="remember"> remember-me
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
                         </form>
                     </div>
                 </div>

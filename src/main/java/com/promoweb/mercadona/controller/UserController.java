@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-
 @Controller
 @RequestMapping("/api/users")
 public class UserController {
@@ -27,9 +26,9 @@ public class UserController {
 
     @GetMapping("/index")
     public String index(Model model,
-                             @RequestParam(name = "page", defaultValue = "0") int page,
-                             @RequestParam(name = "size", defaultValue = "4") int size,
-                             @RequestParam(name = "keyword", defaultValue = "") String kw) {
+                        @RequestParam(name = "page", defaultValue = "0") int page,
+                        @RequestParam(name = "size", defaultValue = "4") int size,
+                        @RequestParam(name = "keyword", defaultValue = "") String kw) {
         // Utilisez votre méthode de recherche utilisateur avec pagination
         Page<User> pageUsers = userService.findUsersWithPagination(kw, PageRequest.of(page, size));
 
@@ -38,12 +37,12 @@ public class UserController {
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
 
-        return "user/listUser";
+        return "/listUser";
     }
 
     @GetMapping("/")
     public String home(){
-        return "redirect:user/index";
+        return "redirect:/index";
     }
 
     //Read
@@ -52,12 +51,11 @@ public class UserController {
         User user = userService.getUserById(id);
         if (user != null) {
             model.addAttribute("user", user);
-            return "/profile";
+            return "editUser";
             //ResponseEntity.ok(user);
         } else {
             throw new EntityNotFoundException("L'utilisateur avec l'id : " +id + " n'existe pas");
         }
-
     }
 
     //Create
@@ -65,17 +63,17 @@ public class UserController {
     @GetMapping("/formUser")
     public String formUser(Model model) {
         model.addAttribute("user", new User());
-        return "/user/formUser";
+        return "/formUser";
     }
 
     @PostMapping("/saveUser")
     public String createUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) return "user/formUser";
+        if (bindingResult.hasErrors()) return "/formUser";
 
         User createUser = userService.createUser(user);
-       //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
+        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
         model.addAttribute("createdUser", createUser);
-        return "redirect:/index";
+        return "redirect:index";
     }
 
     // Liste des  utulisateurs
@@ -83,32 +81,49 @@ public class UserController {
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
-        return "/user/listUser";
+        return "/listUser";
     }
 
     //Update
-    @PutMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, Model model) {
-        User updatedUser = userService.updateUser(id, user);
-        if (updatedUser != null) {
+    @GetMapping( "/editUser/{id}")
+    public String editUser(@PathVariable Long id, @ModelAttribute("user") User user, Model model) {
+        User newuser = userService.getUserById(id);
+        if (newuser != null) {
             // On peut ajouter des attributs au modèle si nécessaire
-            model.addAttribute("updatedUser", updatedUser);
+
+            model.addAttribute("user", newuser);
+
         } else {
             throw new EntityNotFoundException("L'administrateur avec l'id : " + id + " n'existe pas");
         }
+        //userService.updateUser(user.getId(), user);
         // Redirige vers la page contenant la liste de tous les utilisateurs
-        return "redirect:/user/updateUser";
+        return "/editUser";
+    }
+
+    @PostMapping("/updateUser/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/editUser/" + user.getId();
+        }
+
+        userService.updateUser(id, user);
+
+        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
+        model.addAttribute("user", user);
+        return "redirect:../index";
     }
 
 
+
     //Delete
-    @DeleteMapping("/delete")
-    public String deleteUser(Long id, String keyword, int page, Model model) {
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id, Model model) {
         userService.deleteUser(id);
         // On peut ajouter des attributs au modèle si nécessaire
-        model.addAttribute("message", "L'administrateur a été supprimé avec succès.");
+        model.addAttribute("message", "L'utilisateur a été supprimé avec succès.");
         // Redirige vers la page contenant la liste de tous les utilisateurs
-        return "redirect:/index?page="+page+"&keyword="+keyword;
+        return "redirect:../index";
     }
 
 

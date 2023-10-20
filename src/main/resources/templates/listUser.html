@@ -20,7 +20,11 @@
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
-
+                <div th:if="${updatedUser != null}">
+                    <p>Utilisateur mis à jour avec succès :</p>
+                    <p>ID: <span th:text="${updatedUser.id}"></span></p>
+                    <p>Nom d'utilisateur: <span th:text="${updatedUser.username}"></span></p>
+                </div>
                 <!-- Tableau des utilisateurs -->
                 <table class="table">
                     <thead>
@@ -32,7 +36,7 @@
                         <th>Role</th>
                         <th>Username</th>
                         <th>Delete</th>
-                        <th>Edit</th>
+                        <th class="text-center">Edit</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,22 +49,19 @@
                         <td th:text="${u.role}"></td>
                         <td th:text="${u.username}"></td>
                         <td>
-                            <!-- Liens pour supprimer et éditer un utilisateur -->
-                            <div class="d-flex justify-content-between">
-                                <div class="text-center">
-                                    <a onclick="return confirm('Etes vous sure?')"
-                                       th:href="@{delete(id=${u.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                    <span>Delete</span>
-                                </div>
-                                <div class="text-center">
-                                    <a class="btn btn-success ml-4" th:href="@{updateUser(id=${u.id})}">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <span>Edit</span>
-                                </div>
-                            </div>
+                            <!-- Liens pour supprimer  un utilisateur -->
+                            <a onclick="return confirm('Etes vous sure?')"
+                               th:href="@{delete/{id}(id=${u.id})
+                                   }" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <!-- Liens pour editer  un utilisateur -->
+                            <input type="hidden" name="userId" th:value="${u.id}" />
+                            <a class="btn btn-success ml-4" th:href="@{editUser/{id}(id=${u.id})}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
                         </td>
                     </tr>
                     </tbody>

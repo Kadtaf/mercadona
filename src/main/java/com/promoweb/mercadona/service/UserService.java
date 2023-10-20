@@ -40,11 +40,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User updateUser(Long id, User user) {
+    public void updateUser(Long id, User user) {
         User existingUser = getUserById(id);
         if (existingUser != null) {
             // Validation de traitement avant d'enregistrer dans la base de données
-            validateUser(user);
+           // validateUser(user);
             // Mettez à jour d'autres champs si nécessaire
             existingUser.setUsername(user.getUsername());
             existingUser.setFirstname(user.getFirstname());
@@ -55,10 +55,11 @@ public class UserService {
             if (user.getPassword() != null) {
                 existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
-            return userRepository.save(existingUser);
+            userRepository.save(existingUser);
         } else {
             throw new EntityNotFoundException("L'Administrateur avec l'id : " + id + " n'existe pas");
         }
+
     }
 
     public void deleteUser(Long id) {

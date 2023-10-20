@@ -15,6 +15,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("Mercadona API")
                         .version("1.0")
-                        .description("Documentation de l'API REST Mercadona"));
+                        .description("Documentation de l'API Mercadona"));
     }
 }

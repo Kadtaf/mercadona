@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Utilisateurs </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-6 offset-3">
+            <div class="card">
+                <div class="card-header">Mis à jour de l'utilisateur</div>
+                <div class="card-body">
+                    <div class="p-3">
+                        <form th:method="post" th:action="@{../updateUser/{id}(id=${user.id})}">
+                            <div class="mb-3 mt-3">
+                                <label for="lastname" class="form-label">Nom:</label>
+                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname" th:value="${user.lastname}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="firstname" class="form-label">Prenom:</label>
+                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname" th:value="${user.firstname}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email:</label>
+                                <input type="text" class="form-control" id="email" placeholder="Email" name="email" th:value="${user.email}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Rôle:</label>
+                                <input type="text" class="form-control" id="role" placeholder="role" name="role" th:value="${user.role}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur:</label>
+                                <input type="text" class="form-control" id="username" placeholder="Username" name="username" th:value="${user.username}">
+                            </div>
+
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="id" th:value="${user.id}" />
+                            <button class="btn btn-success">Mettre à jour</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
