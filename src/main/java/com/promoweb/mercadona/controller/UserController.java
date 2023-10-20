@@ -37,7 +37,7 @@ public class UserController {
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
 
-        return "/listUser";
+        return "/users/listUser";
     }
 
     @GetMapping("/")
@@ -63,7 +63,7 @@ public class UserController {
     @GetMapping("/formUser")
     public String formUser(Model model) {
         model.addAttribute("user", new User());
-        return "/formUser";
+        return "/users/formUser";
     }
 
     @PostMapping("/saveUser")

@@ -33,7 +33,7 @@ public class ProductController {
     @GetMapping("/listProducts")
     public String listAllProducts(Model model,
                         @RequestParam(name = "page", defaultValue = "0") int page,
-                        @RequestParam(name = "size", defaultValue = "2") int size,
+                        @RequestParam(name = "size", defaultValue = "5") int size,
                         @RequestParam(name = "keyword", defaultValue = "") String kw) {
 
         // Utilisez votre méthode de recherche produits avec pagination
@@ -43,7 +43,7 @@ public class ProductController {
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
             model.addAttribute("keyword", kw);
-            return "/produits/catalogue";
+            return "/products/catalogue";
     }
 
     @GetMapping("/")
@@ -56,7 +56,7 @@ public class ProductController {
         try {
             List<Product> products = productService.getAllProducts();
             model.addAttribute("products", products);
-            return "/produits/catalogue";
+            return "/catalogue";
         } catch (Exception e) {
             String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
             throw new RuntimeException(errorMessage, e);

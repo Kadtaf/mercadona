@@ -28,9 +28,9 @@ CREATE TABLE categories (
 CREATE TABLE products (
                          id SERIAL PRIMARY KEY,
                          label VARCHAR(255) NOT NULL,
-                         description TEXT,
-                         price DECIMAL(10,2) NOT NULL,
                          image VARCHAR(255),
+                         description TEXT,
+                         prix DECIMAL(10,2) NOT NULL,
                          category_id BIGINT,
                          promotion_id BIGINT DEFAULT NULL,
                          user_id BIGINT NOT NULL,
