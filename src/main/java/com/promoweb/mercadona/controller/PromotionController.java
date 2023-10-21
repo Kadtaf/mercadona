@@ -1,15 +1,16 @@
 package com.promoweb.mercadona.controller;
+import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.model.Promotion;
+import com.promoweb.mercadona.service.ProductService;
 import com.promoweb.mercadona.service.PromotionService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @Controller
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.*;
 public class PromotionController {
 
     private final PromotionService promotionService;
+    private final ProductService productService;
 
     @Autowired
-    public PromotionController(PromotionService promotionService) {
+    public PromotionController(PromotionService promotionService, ProductService productService) {
         this.promotionService = promotionService;
+        this.productService = productService;
     }
 
     @GetMapping("/index")
@@ -39,25 +42,26 @@ public class PromotionController {
         return "/produits/listPromotion";
     }
 
+    @GetMapping
+    public String getAllPromotions(Model model) {
+        List<Promotion> promotions = promotionService.getAllPromotions();
+        model.addAttribute("promotions", promotions);
+        return "promotionList";
+    }
 
     @GetMapping("/add")
     public String showAddPromotionForm(Model model) {
         model.addAttribute("promotion", new Promotion());
-        return "/produits/addPromotion";
+        return "addPromotion";
     }
 
-    @PostMapping("/savePromo")
-    public String addPromotion(@Valid @ModelAttribute("promotion") Promotion promotion, BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
-            return "/produits/addPromotion";
-        }
-        Promotion createdPromotion = promotionService.addPromotion(promotion);
-        model.addAttribute("createdPromotion", createdPromotion);
+    @PostMapping("/add")
+    public String addPromotion(@ModelAttribute Promotion promotion) {
+        Promotion createdPromotion = promotionService.createPromotion(promotion);
         if (createdPromotion != null) {
-            return "redirect:/listPromotion";
+            return "redirect:/promotions";
         } else {
-            return "redirect:/listPromotion/add?error";
+            return "redirect:/promotions/add?error";
         }
     }
 
@@ -65,22 +69,14 @@ public class PromotionController {
     public String showUpdatePromotionForm(@PathVariable Long id, Model model) {
         Promotion promotion = promotionService.getPromotionById(id);
         model.addAttribute("promotion", promotion);
-        return "/produits/updatePromotion";
+        return "updatePromotion";
     }
 
-    @PostMapping("/updatePromotion/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute("promotion") Promotion promotion, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/updatePromotion/" + promotion.getId();
-        }
-
+    @PostMapping("/update/{id}")
+    public String updatePromotion(@PathVariable Long id, @ModelAttribute Promotion promotion) {
         promotionService.updatePromotion(id, promotion);
-
-        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
-        model.addAttribute("promotion", promotion);
-        return "redirect:../index";
+        return "redirect:/promotions";
     }
-
 
     @GetMapping("/delete/{id}")
     public String deletePromotion(@PathVariable Long id) {
@@ -91,8 +87,9 @@ public class PromotionController {
     // Nouvelle méthode pour calculer le pourcentage en fonction du prix du produit
     @GetMapping("/calculatePercentage/{id}/{productPrice}")
     @ResponseBody
-    public double calculatePercentage(@PathVariable Long id, @PathVariable double productPrice) {
+    public double calculatePercentage(@PathVariable Long id, @PathVariable Long product_id) {
         Promotion promotion = promotionService.getPromotionById(id);
-        return promotionService.calculatePercentage(promotion, productPrice);
+        Product product = productService.getProductById(product_id);
+        return promotionService.calculatePercentage(promotion, product);
     }
 }

@@ -60,4 +60,7 @@ public class CategoryService {
         return product != null && productRepository.existsById(product.getId());
     }
 
+    public void saveCategory(Category newCategory) {
+        categoryRepository.save(newCategory);
+    }
 }

@@ -32,6 +32,10 @@ public class Category {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getLabel() {
         return label;
     }
@@ -47,4 +51,6 @@ public class Category {
                 ", products=" + products +
                 '}';
     }
+
+
 }

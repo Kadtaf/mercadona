@@ -1,5 +1,6 @@
 package com.promoweb.mercadona.service;
 
+import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.repository.PromotionRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,11 +47,12 @@ public class PromotionService {
         return promotionRepository.findAll();
     }
 
-    public double calculatePercentage(Promotion promotion, double productPrice) {
-        if (isValidPromotion(promotion) && productPrice > 0) {
-            return (promotion.getDiscountPercentage() / 100) * productPrice;
+    // Calculer le pourcentage de la promotion en fonction du prix du produit
+    public double calculatePercentage(Promotion promotion, Product product) {
+        if (isValidPromotion(promotion) && product.getPrix() > 0) {
+            return (promotion.getDiscountPercentage() / 100) * product.getPrix();
         }
-        return 0.0;
+        return 0.0; // La promotion n'est pas valide ou le prix du produit est incorrect
     }
 
     public Page<Promotion> findPromotionsWithPagination(String kw, Pageable pageable) {
@@ -79,4 +81,18 @@ public class PromotionService {
                 && !promotion.getEndDate().isBefore(promotion.getStartDate());
     }
 
+    public Promotion createPromotion(Promotion promotion) {
+        // Validation des champs obligatoires
+        if (isValidPromotion(promotion) && isValidDateRange(promotion)) {
+            // Enregistrement dans la base de données
+            return promotionRepository.save(promotion);
+        }
+        return null;
+    }
+
+    // Validation de la période de validité
+    private boolean isValidDateRange(Promotion promotion) {
+        return promotion.getStartDate() != null && promotion.getEndDate() != null
+                && !promotion.getEndDate().isBefore(promotion.getStartDate());
+    }
 }

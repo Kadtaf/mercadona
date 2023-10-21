@@ -51,7 +51,7 @@ public class UserController {
         User user = userService.getUserById(id);
         if (user != null) {
             model.addAttribute("user", user);
-            return "editUser";
+            return "/users/editUser";
             //ResponseEntity.ok(user);
         } else {
             throw new EntityNotFoundException("L'utilisateur avec l'id : " +id + " n'existe pas");
@@ -68,7 +68,7 @@ public class UserController {
 
     @PostMapping("/saveUser")
     public String createUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) return "/formUser";
+        if (bindingResult.hasErrors()) return "/users/formUser";
 
         User createUser = userService.createUser(user);
         //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
@@ -81,7 +81,7 @@ public class UserController {
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
-        return "/listUser";
+        return "/users/listUser";
     }
 
     //Update
@@ -98,13 +98,13 @@ public class UserController {
         }
         //userService.updateUser(user.getId(), user);
         // Redirige vers la page contenant la liste de tous les utilisateurs
-        return "/editUser";
+        return "/users/editUser";
     }
 
     @PostMapping("/updateUser/{id}")
     public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "redirect:/editUser/" + user.getId();
+            return "redirect:/editUser" + user.getId();
         }
 
         userService.updateUser(id, user);

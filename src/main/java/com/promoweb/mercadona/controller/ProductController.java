@@ -2,9 +2,14 @@ package com.promoweb.mercadona.controller;
 
 
 import com.promoweb.mercadona.exception.NoProductsFoundException;
+import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
+import com.promoweb.mercadona.model.User;
+import com.promoweb.mercadona.service.CategoryService;
 import com.promoweb.mercadona.service.ProductService;
+import com.promoweb.mercadona.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +30,14 @@ public class ProductController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
+    private final CategoryService categoryService;
+
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
+
     }
 
     @GetMapping("/listProducts")
@@ -35,15 +45,21 @@ public class ProductController {
                         @RequestParam(name = "page", defaultValue = "0") int page,
                         @RequestParam(name = "size", defaultValue = "5") int size,
                         @RequestParam(name = "keyword", defaultValue = "") String kw) {
-
-        // Utilisez votre méthode de recherche produits avec pagination
+        try {
+            // Recherche la liste des produits avec pagination
             Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
 
-            model.addAttribute("products",  pageProducts.getContent());
+            model.addAttribute("products", pageProducts.getContent());
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
             model.addAttribute("keyword", kw);
+
             return "/products/catalogue";
+        } catch (Exception e) {
+            logger.error("Une erreur s'est produite lors de la récupération des produits.", e);
+            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
+            throw new RuntimeException(errorMessage, e);
+        }
     }
 
     @GetMapping("/")
@@ -56,7 +72,7 @@ public class ProductController {
         try {
             List<Product> products = productService.getAllProducts();
             model.addAttribute("products", products);
-            return "/catalogue";
+            return "/products/catalogue";
         } catch (Exception e) {
             String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
             throw new RuntimeException(errorMessage, e);
@@ -65,41 +81,138 @@ public class ProductController {
 
     //Read
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id, Model model) {
+    public String getProductById(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id);
         if (product != null) {
             model.addAttribute("product", product);
-            return  product;
+            return "/products/catalogue"; // Thymeleaf template name
         } else {
             throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
         }
     }
 
     //Create
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product createProduct = productService.createProduct(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createProduct);
-    }
+    @GetMapping("/formProduct")
+    public String showCreateForm(Model model) {
+        try {
+            // Récupérer toutes les catégories de la base de données
+            List<Category> categories = categoryService.getAllCategories();
 
-    //Update
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        Product updateProduct = productService.updateProduct(id, product);
-        if (updateProduct != null) {
-            return ResponseEntity.ok(updateProduct);
-        } else {
-            throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
+            // Ajouter les catégories au modèle pour les rendre disponibles dans la vue Thymeleaf
+            model.addAttribute("categories", categories);
+
+            // Ajouter un nouvel objet Product au modèle pour le formulaire
+            model.addAttribute("product", new Product());
+
+            // Retourner le nom de la vue Thymeleaf
+            return "products/formProduct";
+        } catch (Exception e) {
+            // Gestion des erreurs spécifiques à l'affichage du formulaire de création
+            logger.error("Une erreur s'est produite lors de l'affichage du formulaire de création.", e);
+            model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de création.");
+            return "/errors/error";
         }
     }
 
-    //Delete
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-            productService.deleteProduct(id);
-            return ResponseEntity.noContent().build();
+    @PostMapping("/saveProduct")
+    public String createProduct(@ModelAttribute Product product,
+                                @RequestParam(name = "existingCategoryId", required = false) Long category_id,
+                                @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
+                                @AuthenticationPrincipal User currentUser,
+                                Model model) {
+        try {
+            // Vérifiez si une catégorie existante est sélectionnée
+            if (category_id != null) {
+                Category existingCategory = categoryService.getCategoryById(category_id);
+                product.setCategory(existingCategory);
+            } else {
+                // Si une nouvelle catégorie est saisie, créez-la et utilisez-la pour le produit
+                if (!StringUtils.isEmpty(newCategoryLabel)) {
+                    Category newCategory = new Category();
+                    newCategory.setLabel(newCategoryLabel);
+                    categoryService.saveCategory(newCategory);
+                    product.setCategory(newCategory);
+                }
+            }
+            product.setUser(currentUser);
+
+            productService.createProduct(product);
+
+            // Utilisez la redirection pour éviter les problèmes de re-soumission du formulaire
+            return "redirect:/products/catalogue";
+        } catch (Exception e) {
+            // Gestion des erreurs spécifiques à la création du produit
+            logger.error("Une erreur s'est produite lors de la création du produit.", e);
+            model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
+            return "/errors/error";
+        }
     }
 
+
+
+
+
+    //Update
+    @GetMapping("/editProductForm/{id}")
+    public String showUpdateForm(@PathVariable Long id, Model model) {
+        try {
+            Product product = productService.getProductById(id);
+            if (product != null) {
+                model.addAttribute("product", product);
+                return "products/editProduct"; // Thymeleaf template name pour afficher le formulaire de mise à jour
+            } else {
+                throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
+            }
+        } catch (EntityNotFoundException e) {
+            // Gestion spécifique de l'exception EntityNotFoundException
+            logger.warn("Produit non trouvé: {}", e.getMessage());
+            model.addAttribute("error", "Produit non trouvé.");
+            return "/errors/error";
+        } catch (Exception e) {
+            // Gestion générale des erreurs
+            logger.error("Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.", e);
+            model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.");
+            return "/errors/error";
+        }
+    }
+
+    @PostMapping("/saveProduct/{id}")
+    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product, Model model) {
+        try {
+            productService.updateProduct(id, product);
+            return "redirect:/products/listproducts";
+        } catch (EntityNotFoundException e) {
+            // Gestion spécifique de l'exception EntityNotFoundException
+            logger.warn("Produit non trouvé lors de la mise à jour: {}", e.getMessage());
+            model.addAttribute("error", "Produit non trouvé lors de la mise à jour.");
+            return "/errors/error";
+        } catch (Exception e) {
+            // Gestion générale des erreurs
+            logger.error("Une erreur s'est produite lors de la mise à jour du produit.", e);
+            model.addAttribute("error", "Une erreur s'est produite lors de la mise à jour du produit.");
+            return "/errors/error";
+        }
+    }
+
+
+    //Delete
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id, Model model) {
+        try {
+            productService.deleteProduct(id);
+            return "redirect:/products/listProducts";
+        } catch (EntityNotFoundException e) {
+            // Gestion spécifique de l'exception EntityNotFoundException
+            logger.warn("Produit non trouvé lors de la suppression: {}", e.getMessage());
+            model.addAttribute("error", "Produit non trouvé lors de la suppression.");
+            return "/errors/error";
+        } catch (Exception e) {
+            // Gestion générale des erreurs
+            logger.error("Une erreur s'est produite lors de la suppression du produit.", e);
+            model.addAttribute("error", "Une erreur s'est produite lors de la suppression du produit.");
+            return "/errors/error";
+        }
+    }
 
     @GetMapping("/promotions")
     public ResponseEntity<List<Product>> getPromotionalProducts() {

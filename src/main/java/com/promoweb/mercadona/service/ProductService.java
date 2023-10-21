@@ -3,7 +3,6 @@ package com.promoweb.mercadona.service;
 import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
-import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.repository.ProductRepository;
 import com.promoweb.mercadona.repository.CategoryRepository;
 import org.slf4j.Logger;
@@ -31,13 +30,11 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
-        if (isValidProduct(product)) {
+            //isValidProduct(product);
             return productRepository.save(product);
-        }
-        return null;
     }
 
-    public Product updateProduct(Long id, Product product) {
+    public void updateProduct(Long id, Product product) {
         Product existingProduct = getProductById(id);
         if (existingProduct != null && isValidProduct(product)) {
             // Eenregistrer dans la base de données
@@ -47,9 +44,8 @@ public class ProductService {
             existingProduct.setImage(product.getImage());
             existingProduct.setCategory(product.getCategory());
             existingProduct.setPromotion(product.getPromotion());
-            return productRepository.save(existingProduct);
+             productRepository.save(existingProduct);
         }
-        return null;
     }
 
     public void deleteProduct(Long id) {

@@ -4,6 +4,7 @@ package com.promoweb.mercadona.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promoweb.mercadona.MercadonaApplication;
 import com.promoweb.mercadona.model.Product;
+import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.service.ProductService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
