@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="template.html">
     <head>
@@ -16,6 +17,10 @@
                         <div class="card-body">
                             <div class="p-3">
                                 <form th:method="post" th:action="@{saveProduct}">
+                                    <div class="mb-3">
+                                        <label for="userId">ID:</label>
+                                        <input type="text" id="userId" name="userId" th:value="${userId}">
+                                    </div>
                                     <div class="mb-3">
                                         <label for="image" class="form-label">Image du Produit</label>
                                         <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
@@ -35,7 +40,7 @@
                                     <div class="mb-3">
                                         <label for="category" class="form-label">Catégorie</label>
                                         <select class="form-select" id="category" name="existingCategoryId">
-                                            <option value="" disabled selected>Sélectionner une catégorie</option>
+                                            <option value="" disabled selected hidden>Sélectionner une catégorie</option>
                                             <!-- Boucle pour afficher les catégories existantes -->
                                             <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getLabel()}"></option>
                                         </select>

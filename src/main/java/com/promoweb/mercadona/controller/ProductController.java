@@ -17,12 +17,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/api/products")
@@ -32,19 +35,23 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
+    private final UserService userService;
+
 
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService) {
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService) {
         this.productService = productService;
         this.categoryService = categoryService;
 
+
+        this.userService = userService;
     }
 
     @GetMapping("/listProducts")
     public String listAllProducts(Model model,
-                        @RequestParam(name = "page", defaultValue = "0") int page,
-                        @RequestParam(name = "size", defaultValue = "5") int size,
-                        @RequestParam(name = "keyword", defaultValue = "") String kw) {
+                                  @RequestParam(name = "page", defaultValue = "0") int page,
+                                  @RequestParam(name = "size", defaultValue = "5") int size,
+                                  @RequestParam(name = "keyword", defaultValue = "") String kw) {
         try {
             // Recherche la liste des produits avec pagination
             Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
@@ -63,7 +70,7 @@ public class ProductController {
     }
 
     @GetMapping("/")
-    public String catalogue(){
+    public String catalogue() {
         return "redirect:/listProducts";
     }
 
@@ -94,37 +101,46 @@ public class ProductController {
     //Create
     @GetMapping("/formProduct")
     public String showCreateForm(Model model) {
-        try {
-            // Récupérer toutes les catégories de la base de données
-            List<Category> categories = categoryService.getAllCategories();
 
-            // Ajouter les catégories au modèle pour les rendre disponibles dans la vue Thymeleaf
-            model.addAttribute("categories", categories);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            // Ajouter un nouvel objet Product au modèle pour le formulaire
-            model.addAttribute("product", new Product());
+        String username =  authentication.getName();
+        Long userId = userService.getIdUserByUsername(username);
 
-            // Retourner le nom de la vue Thymeleaf
-            return "products/formProduct";
-        } catch (Exception e) {
-            // Gestion des erreurs spécifiques à l'affichage du formulaire de création
-            logger.error("Une erreur s'est produite lors de l'affichage du formulaire de création.", e);
-            model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de création.");
-            return "/errors/error";
-        }
-    }
+         model.addAttribute("userId", userId);
+
+        // Récupérer toutes les catégories de la base de données
+        List<Category> categories = categoryService.getAllCategories();
+
+        // Ajouter les catégories au modèle pour les rendre disponibles dans la vue Thymeleaf
+        model.addAttribute("categories", categories);
+
+        // Ajouter un nouvel objet Product au modèle pour le formulaire
+        model.addAttribute("product", new Product());
+
+        // Retourner le nom de la vue Thymeleaf
+        return "products/formProduct";
+
+}
 
     @PostMapping("/saveProduct")
     public String createProduct(@ModelAttribute Product product,
+                                @RequestParam(name = "userId", required = true) Long user_id,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
-                                @AuthenticationPrincipal User currentUser,
                                 Model model) {
+        System.out.println(product);
+
+            User user = userService.getUserById(user_id);
+            product.setUser(user);
         try {
+
             // Vérifiez si une catégorie existante est sélectionnée
             if (category_id != null) {
                 Category existingCategory = categoryService.getCategoryById(category_id);
                 product.setCategory(existingCategory);
+
+
             } else {
                 // Si une nouvelle catégorie est saisie, créez-la et utilisez-la pour le produit
                 if (!StringUtils.isEmpty(newCategoryLabel)) {
@@ -134,24 +150,21 @@ public class ProductController {
                     product.setCategory(newCategory);
                 }
             }
-            product.setUser(currentUser);
 
             productService.createProduct(product);
 
             // Utilisez la redirection pour éviter les problèmes de re-soumission du formulaire
-            return "redirect:/products/catalogue";
+            return "redirect:listProducts";
         } catch (Exception e) {
             // Gestion des erreurs spécifiques à la création du produit
-            logger.error("Une erreur s'est produite lors de la création du produit.", e);
+            logger.error("Une erreur s'est produite lors de la création du produit." + e.getMessage());
+            System.out.println(e.getMessage());
             model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
             return "/errors/error";
         }
     }
 
-
-
-
-
+    
     //Update
     @GetMapping("/editProductForm/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model) {

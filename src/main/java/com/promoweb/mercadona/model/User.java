@@ -1,6 +1,6 @@
 package com.promoweb.mercadona.model;
 
-import com.promoweb.mercadona.model.Product;
+
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "users")
@@ -115,7 +116,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Retournez une liste d'attributs GrantedAuthority représentant les rôles de l'utilisateur
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+        return Collections.singletonList(new SimpleGrantedAuthority(role.toUpperCase()));
     }
 
     @Override

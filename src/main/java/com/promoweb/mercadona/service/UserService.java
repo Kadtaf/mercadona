@@ -92,4 +92,10 @@ public class UserService {
         }
     }
 
+    public Long getIdUserByUsername(String username) {
+
+        User user = userRepository.findByUsername(username);
+        return user.getId();
+    }
+
 }
