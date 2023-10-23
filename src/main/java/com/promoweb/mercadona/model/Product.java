@@ -16,7 +16,7 @@ public class Product {
     private String label;
     private String description;
     private double prix;
-    private String image;
+    private String imagePath;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -36,14 +36,14 @@ public class Product {
     public Product(String label,
                    String description,
                    double prix,
-                   String image,
+                   String imagePath,
                    Category category,
                    Promotion promotion
     ) {
         this.label = label;
         this.description = description;
         this.prix = prix;
-        this.image = image;
+        this.imagePath = imagePath;
         this.category = category;
         this.promotion = promotion;
 
@@ -85,12 +85,12 @@ public class Product {
         this.prix = prix;
     }
 
-    public String getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Category getCategory() {
@@ -115,7 +115,7 @@ public class Product {
                 "label='" + label + '\'' +
                 ", description='" + description + '\'' +
                 ", prix=" + prix +
-                ", image='" + image + '\'' +
+                ", image='" + imagePath + '\'' +
                 ", category=" + category +
                 ", promotion=" + promotion +
                 ", user=" + user +

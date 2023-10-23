@@ -18,7 +18,7 @@
             <!-- Thymeleaf iteration to display products -->
             <div th:each="product : ${products}" class="col">
                 <div class="card h-100">
-                    <img th:src="@{/assets/{image}(image=${product.image})}" class="card-img-top" alt="Product Image">
+                    <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${product.label}"></h5>
                         <p class="card-text" th:text="${product.description}"></p>
@@ -26,11 +26,11 @@
                         <p th:if="${product.promotion != null}" class="card-text text-danger" th:text="'Promotion: ' + ${product.promotion.discountPercentage}"></p>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <a th:href="@{/editProduct/{id}(id=${product.id})}" class="btn btn-primary">
+                        <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
                             <i class="bi bi-pencil"></i>
                         </a>
                         <a th:href="@{'/addPromotion'}" class="btn btn-success">Ajouter une pomotion</a>
-                        <a th:href="@{/deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
+                        <a th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
                             <i class="bi bi-trash"></i>
                         </a>
                     </div>

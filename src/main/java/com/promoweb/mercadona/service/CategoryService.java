@@ -4,7 +4,10 @@ import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.repository.CategoryRepository;
 import com.promoweb.mercadona.repository.ProductRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.List;
@@ -63,4 +66,6 @@ public class CategoryService {
     public void saveCategory(Category newCategory) {
         categoryRepository.save(newCategory);
     }
+
+
 }

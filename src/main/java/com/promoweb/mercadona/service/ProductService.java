@@ -10,8 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -41,7 +46,7 @@ public class ProductService {
             existingProduct.setLabel(product.getLabel());
             existingProduct.setDescription(product.getDescription());
             existingProduct.setPrix(product.getPrix());
-            existingProduct.setImage(product.getImage());
+            existingProduct.setImagePath(product.getImagePath());
             existingProduct.setCategory(product.getCategory());
             existingProduct.setPromotion(product.getPromotion());
              productRepository.save(existingProduct);
@@ -98,6 +103,35 @@ public class ProductService {
             // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
             return productRepository.findByCategoryContains(kw, pageable);
         }
+    }
+
+    public String uploadImage(MultipartFile imageFile) throws IOException {
+        // Vérifiez si un fichier a été fourni
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Obtenez le chemin du répertoire où vous souhaitez stocker les images (vous devez définir ce chemin selon votre configuration)
+            String uploadDir ="src/main/resources/static/assets/";
+
+            // Assurez-vous que le répertoire existe, sinon créez-le
+            File dir = new File(uploadDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // Générez un nom de fichier unique pour éviter les conflits
+            String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+
+            // Construisez le chemin complet du fichier
+            String filePath = uploadDir + File.separator + fileName;
+
+            // Copiez le contenu du fichier vers le chemin spécifié
+            FileCopyUtils.copy(imageFile.getBytes(), new File(filePath));
+
+            // Retournez le chemin du fichier enregistré
+            return fileName;
+        }
+
+        // Si aucun fichier n'est fourni, retournez une chaîne vide ou null selon vos besoins
+        return "";
     }
 
 }

@@ -16,14 +16,14 @@
                         <div class="card-header">Création d'un nouveau produit</div>
                         <div class="card-body">
                             <div class="p-3">
-                                <form th:method="post" th:action="@{saveProduct}">
+                                <form th:method="post" th:action="@{saveProduct}" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="userId">ID:</label>
                                         <input type="text" id="userId" name="userId" th:value="${userId}">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="image" class="form-label">Image du Produit</label>
-                                        <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+                                        <label for="imageFile" class="form-label">Image du Produit</label>
+                                        <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="label" class="form-label">Label</label>

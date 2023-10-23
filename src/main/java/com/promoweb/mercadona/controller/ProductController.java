@@ -22,9 +22,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -98,7 +106,7 @@ public class ProductController {
         }
     }
 
-    //Create
+    //Create the new product
     @GetMapping("/formProduct")
     public String showCreateForm(Model model) {
 
@@ -107,7 +115,7 @@ public class ProductController {
         String username =  authentication.getName();
         Long userId = userService.getIdUserByUsername(username);
 
-         model.addAttribute("userId", userId);
+        model.addAttribute("userId", userId);
 
         // Récupérer toutes les catégories de la base de données
         List<Category> categories = categoryService.getAllCategories();
@@ -121,33 +129,38 @@ public class ProductController {
         // Retourner le nom de la vue Thymeleaf
         return "products/formProduct";
 
-}
+    }
 
     @PostMapping("/saveProduct")
     public String createProduct(@ModelAttribute Product product,
                                 @RequestParam(name = "userId", required = true) Long user_id,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
+                                @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) {
-        System.out.println(product);
 
-            User user = userService.getUserById(user_id);
-            product.setUser(user);
+        User user = userService.getUserById(user_id);
+        product.setUser(user);
         try {
-
             // Vérifiez si une catégorie existante est sélectionnée
-            if (category_id != null) {
-                Category existingCategory = categoryService.getCategoryById(category_id);
-                product.setCategory(existingCategory);
+            createCategoryByNewProduct(product, category_id, newCategoryLabel);
+            // Gestion du fichier image
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Enregistrer le fichier image sur le serveur
+                String uplodDir = "src/main/resources/static/assets/";
+                String fileName = org.springframework.util.StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
+                Path uploadPath = Paths.get(uplodDir);
 
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
 
-            } else {
-                // Si une nouvelle catégorie est saisie, créez-la et utilisez-la pour le produit
-                if (!StringUtils.isEmpty(newCategoryLabel)) {
-                    Category newCategory = new Category();
-                    newCategory.setLabel(newCategoryLabel);
-                    categoryService.saveCategory(newCategory);
-                    product.setCategory(newCategory);
+                try (InputStream inputStream = imageFile.getInputStream()) {
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+                    product.setImagePath("/assets/" + fileName);
+                } catch (IOException e) {
+                    throw new RuntimeException("Echec de l'enregistrement du fichier image : " + e.getMessage());
                 }
             }
 
@@ -164,14 +177,21 @@ public class ProductController {
         }
     }
 
-    
     //Update
-    @GetMapping("/editProductForm/{id}")
+    @GetMapping("/editProduct/{id}")
     public String showUpdateForm(@PathVariable Long id, Model model) {
+
         try {
-            Product product = productService.getProductById(id);
+           Product product = productService.getProductById(id);
             if (product != null) {
                 model.addAttribute("product", product);
+
+                // Récupérer toutes les catégories de la base de données
+                List<Category> categories = categoryService.getAllCategories();
+
+                // Ajouter les catégories au modèle pour les rendre disponibles dans la vue Thymeleaf
+                model.addAttribute("categories", categories);
+
                 return "products/editProduct"; // Thymeleaf template name pour afficher le formulaire de mise à jour
             } else {
                 throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
@@ -189,11 +209,23 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/saveProduct/{id}")
-    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product, Model model) {
+    @PostMapping("/updateProduct/{id}")
+    public String updateProduct(@PathVariable Long id,
+                                @ModelAttribute Product product,
+                                @RequestParam(name = "existingCategoryId", required = false) Long category_id,
+                                @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
+                                @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
+                                Model model) {
+
+            // Vérifiez si une catégorie existante est sélectionnée
+
         try {
+            createCategoryByNewProduct(product, category_id, newCategoryLabel);
+            product.setImagePath(productService.uploadImage(imageFile));
             productService.updateProduct(id, product);
-            return "redirect:/products/listproducts";
+
+            return "redirect:../listProducts";
+
         } catch (EntityNotFoundException e) {
             // Gestion spécifique de l'exception EntityNotFoundException
             logger.warn("Produit non trouvé lors de la mise à jour: {}", e.getMessage());
@@ -205,6 +237,22 @@ public class ProductController {
             model.addAttribute("error", "Une erreur s'est produite lors de la mise à jour du produit.");
             return "/errors/error";
         }
+    }
+
+    public void createCategoryByNewProduct(@ModelAttribute Product product, @RequestParam(name = "existingCategoryId", required = false) Long category_id, @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel) {
+        if (category_id != null) {
+            Category existingCategory = categoryService.getCategoryById(category_id);
+             product.setCategory(existingCategory);
+        } else {
+            // Si une nouvelle catégorie est saisie, créez-la et utilisez-la pour le produit
+            if (!StringUtils.isEmpty(newCategoryLabel)) {
+                Category newCategory = new Category();
+                newCategory.setLabel(newCategoryLabel);
+                categoryService.saveCategory(newCategory);
+                product.setCategory(newCategory);
+            }
+        }
+
     }
 
 
