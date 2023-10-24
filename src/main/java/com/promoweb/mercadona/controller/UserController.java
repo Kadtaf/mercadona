@@ -119,9 +119,12 @@ public class UserController {
     //Delete
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id, Model model) {
+
         userService.deleteUser(id);
+
         // On peut ajouter des attributs au modèle si nécessaire
         model.addAttribute("message", "L'utilisateur a été supprimé avec succès.");
+
         // Redirige vers la page contenant la liste de tous les utilisateurs
         return "redirect:../index";
     }

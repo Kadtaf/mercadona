@@ -30,7 +30,8 @@
                             <i class="bi bi-pencil"></i>
                         </a>
                         <a th:href="@{'/addPromotion'}" class="btn btn-success">Ajouter une pomotion</a>
-                        <a th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
+                        <a onclick="return confirm('Etes vous sure?')"
+                           th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
                             <i class="bi bi-trash"></i>
                         </a>
                     </div>

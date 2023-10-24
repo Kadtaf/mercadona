@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 
 @Controller
@@ -145,23 +146,9 @@ public class ProductController {
             // Vérifiez si une catégorie existante est sélectionnée
             createCategoryByNewProduct(product, category_id, newCategoryLabel);
             // Gestion du fichier image
-            if (imageFile != null && !imageFile.isEmpty()) {
-                // Enregistrer le fichier image sur le serveur
-                String uplodDir = "src/main/resources/static/assets/";
-                String fileName = org.springframework.util.StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-                Path uploadPath = Paths.get(uplodDir);
-
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                try (InputStream inputStream = imageFile.getInputStream()) {
-                    Path filePath = uploadPath.resolve(fileName);
-                    Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-                    product.setImagePath("/assets/" + fileName);
-                } catch (IOException e) {
-                    throw new RuntimeException("Echec de l'enregistrement du fichier image : " + e.getMessage());
-                }
+            String imagePath = productService.uploadImage(imageFile);
+            if (!imagePath.isEmpty()) {
+                product.setImagePath(imagePath);
             }
 
             productService.createProduct(product);
@@ -205,7 +192,7 @@ public class ProductController {
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.");
-            return "/errors/error";
+            return "errors/error";
         }
     }
 
@@ -235,7 +222,7 @@ public class ProductController {
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de la mise à jour du produit.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de la mise à jour du produit.");
-            return "/errors/error";
+            return "errors/error";
         }
     }
 
@@ -257,21 +244,28 @@ public class ProductController {
 
 
     //Delete
-    @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id, Model model) {
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable Long id, Product product,  Model model) {
+
         try {
+            System.out.println(product);
             productService.deleteProduct(id);
-            return "redirect:/products/listProducts";
+
+            return "redirect:../listProducts";
+
         } catch (EntityNotFoundException e) {
+
             // Gestion spécifique de l'exception EntityNotFoundException
             logger.warn("Produit non trouvé lors de la suppression: {}", e.getMessage());
             model.addAttribute("error", "Produit non trouvé lors de la suppression.");
-            return "/errors/error";
+            return "errors/error";
+
         } catch (Exception e) {
+
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de la suppression du produit.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de la suppression du produit.");
-            return "/errors/error";
+            return "errors/error";
         }
     }
 

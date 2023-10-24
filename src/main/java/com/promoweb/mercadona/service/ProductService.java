@@ -5,6 +5,7 @@ import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.repository.ProductRepository;
 import com.promoweb.mercadona.repository.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -54,7 +55,17 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
+
+        //Vérifier l'existence du produit
+        Product product = productRepository
+                .findById(id).orElseThrow(() ->
+                        new EntityNotFoundException("Produit non trouvé avec l'ID : " + id));
+        //Détacher le produit de l'utilisateur si on veut supprimer que le produit.
+        product.setUser(null);
+
+        //Spprimer le produit sans affecter l'utilisater associé.
+
+        productRepository.delete(product);
     }
 
     public List<Product> getAllProducts() {
