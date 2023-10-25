@@ -57,10 +57,10 @@ public class PromotionService {
 
     public Page<Promotion> findPromotionsWithPagination(String kw, Pageable pageable) {
         if (kw == null || kw.trim().isEmpty()) {
-            // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
+            // Si le mot-clé est vide, récupérez tous les promotions avec pagination
             return promotionRepository.findAll(pageable);
         } else {
-            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
+            // Si un mot-clé est fourni, recherchez les promotions par mot-clé avec pagination
             return promotionRepository.findByStartDateContains(kw, pageable);
         }
     }

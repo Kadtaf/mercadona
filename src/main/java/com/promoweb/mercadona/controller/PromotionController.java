@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/promotions")
+@RequestMapping("/api/promotions")
 public class PromotionController {
 
     private final PromotionService promotionService;
@@ -39,20 +39,20 @@ public class PromotionController {
         model.addAttribute("currentPage", page);
         model.addAttribute("keyword", kw);
 
-        return "/produits/listPromotion";
+        return "/listPromotion";
     }
 
     @GetMapping
     public String getAllPromotions(Model model) {
         List<Promotion> promotions = promotionService.getAllPromotions();
         model.addAttribute("promotions", promotions);
-        return "promotionList";
+        return "listPromotion";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/addPromotionModal")
     public String showAddPromotionForm(Model model) {
         model.addAttribute("promotion", new Promotion());
-        return "addPromotion";
+        return "/products/addPromotion";
     }
 
     @PostMapping("/add")
@@ -85,7 +85,7 @@ public class PromotionController {
     }
 
     // Nouvelle méthode pour calculer le pourcentage en fonction du prix du produit
-    @GetMapping("/calculatePercentage/{id}/{productPrice}")
+    @GetMapping("/calculatePercentage/{id}/{product_id}")
     @ResponseBody
     public double calculatePercentage(@PathVariable Long id, @PathVariable Long product_id) {
         Promotion promotion = promotionService.getPromotionById(id);

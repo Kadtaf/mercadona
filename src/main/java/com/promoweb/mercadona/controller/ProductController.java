@@ -4,12 +4,12 @@ package com.promoweb.mercadona.controller;
 import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
+import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.service.CategoryService;
 import com.promoweb.mercadona.service.ProductService;
 import com.promoweb.mercadona.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
-import org.apache.commons.lang3.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +24,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 
 @Controller
@@ -282,6 +278,44 @@ public class ProductController {
         } catch (Exception e) {
             logger.error("Une erreur s'est produite lors de la récupération des produits en promotion.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/savePromotion")
+    public String savePromotion(@RequestParam Long productId,
+                                @RequestParam String startDate,
+                                @RequestParam String endDate,
+                                @RequestParam double discountPercentage,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            // Récupérez le produit par son ID
+            Product product = productService.getProductById(productId);
+
+            if (product == null) {
+                // Gérez le cas où le produit n'est pas trouvé
+                return "redirect:/listProducts";
+            }
+
+            // Créez une nouvelle promotion
+            Promotion promotion = new Promotion();
+            promotion.setStartDate(LocalDate.parse(startDate));
+            promotion.setEndDate(LocalDate.parse(endDate));
+            promotion.setDiscountPercentage(discountPercentage);
+
+            // Associez la promotion au produit
+            product.setPromotion(promotion);
+
+            // Enregistrez le produit (la promotion sera enregistrée en cascade)
+            productService.updateProduct(productId, product);
+
+            // Ajoutez un message de succès pour afficher à la page suivante
+            redirectAttributes.addFlashAttribute("successMessage", "Promotion enregistrée avec succès");
+
+            // Redirigez vers la liste des produits
+            return "redirect:/listProducts";
+        } catch (Exception e) {
+            // Gérez les erreurs d'enregistrement de la promotion
+            return "redirect:/listProducts?error=savePromotion";
         }
     }
 
