@@ -47,14 +47,6 @@ public class PromotionService {
         return promotionRepository.findAll();
     }
 
-    // Calculer le pourcentage de la promotion en fonction du prix du produit
-    public double calculatePercentage(Promotion promotion, Product product) {
-        if (isValidPromotion(promotion) && product.getPrix() > 0) {
-            return (promotion.getDiscountPercentage() / 100) * product.getPrix();
-        }
-        return 0.0; // La promotion n'est pas valide ou le prix du produit est incorrect
-    }
-
     public Page<Promotion> findPromotionsWithPagination(String kw, Pageable pageable) {
         if (kw == null || kw.trim().isEmpty()) {
             // Si le mot-clé est vide, récupérez tous les promotions avec pagination

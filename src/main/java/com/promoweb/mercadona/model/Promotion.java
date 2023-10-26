@@ -32,6 +32,13 @@ public class Promotion {
 
     }
 
+    public Promotion(LocalDate startDate, LocalDate endDate, double discountPercentage) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.discountPercentage = discountPercentage;
+
+    }
+
     public Promotion() {
 
     }

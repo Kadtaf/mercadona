@@ -28,12 +28,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers(HttpMethod.GET, "/api/users/promotions/listPromotion", "/api/users/categories/listCategory", "/webjars/**", "/resources/**").permitAll();
-            auth.requestMatchers(HttpMethod.POST, "/api/users/categories/**", "/api/users/products/**", "/api/users/listUser", "/api/users/promotions/**", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
-            auth.requestMatchers(HttpMethod.PUT, "/api/users/categories/**","/api/users/updateUser/**", "/api/users/products/**", "/api/users/index", "/api/users/promotions/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
-            auth.requestMatchers(HttpMethod.GET, "/api/users/formUser/**", "/api/users/listUser/**", "/api/users/updateUser/**", "/swagger-ui.html").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.GET, "/api/users/promotions/listPromotion", "/api/users/categories/listCategory", "/webjars/**", "/resources/**", "/api/products/savePromotion").permitAll();
+            auth.requestMatchers(HttpMethod.POST, "/api/users/categories/**", "/api/users/products/**", "/api/products/savePromotion", "/api/users/listUser", "/api/users/promotions/**", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.PUT, "/api/users/categories/**", "/api/products/savePromotion","/api/users/updateUser/**", "/api/users/products/**", "/api/users/index", "/api/users/promotions/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers(HttpMethod.GET, "/api/users/formUser/**", "/api/users/listUser/**", "/api/products/savePromotion", "/api/users/updateUser/**", "/swagger-ui.html").hasAnyRole("ADMIN", "SUPER_ADMIN");
             auth.anyRequest().authenticated();
+
         }).formLogin(Customizer.withDefaults()).build();
     }
 

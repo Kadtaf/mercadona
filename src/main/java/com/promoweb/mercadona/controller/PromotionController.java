@@ -85,11 +85,11 @@ public class PromotionController {
     }
 
     // Nouvelle méthode pour calculer le pourcentage en fonction du prix du produit
-    @GetMapping("/calculatePercentage/{id}/{product_id}")
+    /*@GetMapping("/calculatePercentage/{id}/{product_id}")
     @ResponseBody
     public double calculatePercentage(@PathVariable Long id, @PathVariable Long product_id) {
         Promotion promotion = promotionService.getPromotionById(id);
         Product product = productService.getProductById(product_id);
         return promotionService.calculatePercentage(promotion, product);
-    }
+    }*/
 }

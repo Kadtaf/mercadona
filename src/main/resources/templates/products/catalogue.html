@@ -5,13 +5,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Liste des Produits </title>
     <script th:inline="javascript">
+
         function showPromotionForm(productId, productPrice) {
-            console.log(productId);
-            $('#productIdModal').val(productId)
-            $('#priceModal').val(productPrice);
-           // $('#addPromotionModal').style.display = 'block';
+                console.log(productId);
+                $('#productIdModal').val(productId)
+                console.log(productPrice);
+                console.log( $('#priceId-' + productId).text());
+                $('#priceModal').val(productPrice);
+
+                // $('#addPromotionModal').style.display = 'block';
 
         }
         //document.getElementById('addPromotionModal').addEventListener('submit', savePromotion());
@@ -28,23 +33,58 @@
             console.log(discountPercentage);
             console.log(productId);
             console.log(productPrice);
-            /* var form = document.getElementById('promotionForm');
-            var data = new FormData(form);
-            console.log(data);
-            for (var [key, value] of data) {
+            let form = document.getElementById('promotionForm');
+            let datas = new FormData(form);
+            console.log(datas);
+            /*for (var [key, value] of data) {
 
                 console.log(key, value)
 
             }*/
             // Effectuer le calcul du nouveau prix
 
-            let newPrice = productPrice * (1 - discountPercentage / 100);
+          /* let newPrice = productPrice * (1 - discountPercentage / 100);
             console.log(newPrice);
             console.log( document.getElementById('priceId-' + productId));
-            $('#priceId-' + productId).text('Prix : ' + newPrice);
+            $('#priceId-' + productId).text('Prix : ' + newPrice);*/
             $('#promotionForm')[0].reset();
             $('#addPromotionModal').hide();
             $('.modal-backdrop').remove();
+
+            let token = $("meta[name='_csrf']").attr("content");
+            console.log(token);
+            let request =
+                $.ajax({
+                    type: "POST",
+                    url: "/api/products/savePromotion",
+                    data:datas,
+                    dataType: 'json',
+                    timeout: 120000, //2 Minutes
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+
+                });
+
+            request.done(function (response) {
+                //Code à jouer en cas d'éxécution sans erreur du script du PHP
+                console.log(response);
+                //alert("Ok");
+                $('#promotionId-' + productId).text(response.promotion.startDate + ' ' + response.promotion.endDate + ': ' + response.promotion.discountPercentage + '%');
+                $('#priceId-' + productId).text('Prix : ' + response.prix);
+            });
+            request.fail(function (http_error) {
+                //Code à jouer en cas d'éxécution en erreur du script du PHP
+
+                let server_msg = http_error.responseText;
+                let code = http_error.status;
+                let code_label = http_error.statusText;
+                alert("Erreur "+code+" ("+code_label+") : "  + server_msg);
+            });
+
+            request.always(function () {
+                //Code à jouer après done OU fail dans tous les cas
+            });
             return false;
             // Effectuer une requête POST pour enregistrer la promotion
            /* let xhr = new XMLHttpRequest();
@@ -102,14 +142,14 @@
         <div class="row row-cols-1 row-cols-md-4 g-4">
             <!-- Thymeleaf iteration to display products -->
             <div th:each="product : ${products}" class="col">
-                <div class="card h-100">
+                <div class="card h-100" th:id="|cardId-${product.id}|">
                     <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${product.label}"></h5>
                         <p class="card-text" th:text="${product.description}"></p>
                         <span class="card-text" th:id="|priceId-${product.id}|">[[${product.prix}]]</span>
-
-                        <p th:if="${product.promotion != null}" th:id="|promotionId-${product.id}|"  class="card-text text-danger" th:text="'Promotion: ' + ${product.promotion.discountPercentage} %"></p>
+                        <p th:if="${product.promotion != null}" class="card-text text-danger">Promotion : [[${product.promotion.discountPercentage}]] %</p>
+                        <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
                    </div>
                     <div class="d-flex justify-content-between">
                         <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
@@ -171,6 +211,7 @@
                             </select>
                            <!-- <input type="number" class="form-control" id="discountPercentageModal" name="discountPercentage" required>-->
                         </div>
+                        <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
                         <input type="text" class="form-control" id="productIdModal" name="productId" required>
                         <button type="button" th:onclick="|savePromotion()|" class="btn btn-primary">Enregistrer</button>
                     </form>

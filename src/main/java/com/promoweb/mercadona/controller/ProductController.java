@@ -8,6 +8,7 @@ import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.service.CategoryService;
 import com.promoweb.mercadona.service.ProductService;
+import com.promoweb.mercadona.service.PromotionService;
 import com.promoweb.mercadona.service.UserService;
 
 import org.slf4j.Logger;
@@ -40,13 +41,16 @@ public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
+    private final PromotionService promotionService;
+
     private final UserService userService;
 
 
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService, UserService userService) {
+    public ProductController(ProductService productService, CategoryService categoryService, PromotionService promotionService, UserService userService) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.promotionService = promotionService;
 
 
         this.userService = userService;
@@ -282,41 +286,55 @@ public class ProductController {
     }
 
     @PostMapping("/savePromotion")
-    public String savePromotion(@RequestParam Long productId,
-                                @RequestParam String startDate,
-                                @RequestParam String endDate,
-                                @RequestParam double discountPercentage,
-                                RedirectAttributes redirectAttributes) {
-        try {
+    @ResponseBody
+    public Product savePromotion(
+                                         @RequestParam Long productId,
+                                     @RequestParam String startDate,
+                                     @RequestParam String endDate,
+                                     @RequestParam double discountPercentage,
+                                     RedirectAttributes redirectAttributes) {
+       /* HashMap<String, String > cars = new HashMap<>();
+        cars.put("1",Long.toString(productId));
+        cars.put("2", startDate);
+        cars.put("3", endDate);
+        cars.put("4", Double.toString(discountPercentage));*/
+
+        Promotion promotion = new Promotion(LocalDate.parse(startDate), LocalDate.parse(endDate), discountPercentage);
+        promotionService.addPromotion(promotion);
+        Product product = productService.getProductById(productId);
+        product.setPromotion(promotion);
+        product.setPrix(product.getPrix(), discountPercentage);
+        productService.updateProduct(productId, product);
+
+            return product;
+      /* try {
             // Récupérez le produit par son ID
-            Product product = productService.getProductById(productId);
+
 
             if (product == null) {
                 // Gérez le cas où le produit n'est pas trouvé
-                return "redirect:/listProducts";
+              //  return "redirect:/listProducts";
             }
 
             // Créez une nouvelle promotion
-            Promotion promotion = new Promotion();
-            promotion.setStartDate(LocalDate.parse(startDate));
-            promotion.setEndDate(LocalDate.parse(endDate));
-            promotion.setDiscountPercentage(discountPercentage);
+
+
 
             // Associez la promotion au produit
-            product.setPromotion(promotion);
+
 
             // Enregistrez le produit (la promotion sera enregistrée en cascade)
-            productService.updateProduct(productId, product);
+
 
             // Ajoutez un message de succès pour afficher à la page suivante
             redirectAttributes.addFlashAttribute("successMessage", "Promotion enregistrée avec succès");
 
             // Redirigez vers la liste des produits
-            return "redirect:/listProducts";
+           // return "redirect:/listProducts";
         } catch (Exception e) {
             // Gérez les erreurs d'enregistrement de la promotion
-            return "redirect:/listProducts?error=savePromotion";
-        }
+           // return "redirect:/listProducts?error=savePromotion";
+        }*/
     }
 
     @GetMapping("/byUser/{user_id}")

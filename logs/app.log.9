@@ -1,14 +1,184 @@
-23:56:30.488 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.508 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.508 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.508 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.508 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.509 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.509 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.509 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.509 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/products/listProducts", parameters={}
-23:56:30.509 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
-23:56:30.512 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+21:50:06.757 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#savePromotion(Long, String, String, double, RedirectAttributes)
+21:50:06.764 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#savePromotion(Long, String, String, double, RedirectAttributes)
+21:50:06.764 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#savePromotion(Long, String, String, double, RedirectAttributes)
+21:50:06.764 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/products/savePromotion", parameters={multipart}
+21:50:06.765 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#savePromotion(Long, String, String, double, RedirectAttributes)
+21:50:06.767 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        promotions
+        (discount_percentage,end_date,start_date) 
+    values
+        (?,?,?)
+21:50:06.786 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.id,
+        c1_0.id,
+        c1_0.label,
+        p1_0.description,
+        p1_0.image_path,
+        p1_0.label,
+        p1_0.prix,
+        p2_0.id,
+        p2_0.discount_percentage,
+        p2_0.end_date,
+        p2_0.start_date,
+        u1_0.id,
+        u1_0.email,
+        u1_0.firstname,
+        u1_0.lastname,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        products p1_0 
+    left join
+        categories c1_0 
+            on c1_0.id=p1_0.category_id 
+    left join
+        promotions p2_0 
+            on p2_0.id=p1_0.promotion_id 
+    left join
+        users u1_0 
+            on u1_0.id=p1_0.user_id 
+    where
+        p1_0.id=?
+21:50:06.790 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.id,
+        c1_0.id,
+        c1_0.label,
+        p1_0.description,
+        p1_0.image_path,
+        p1_0.label,
+        p1_0.prix,
+        p2_0.id,
+        p2_0.discount_percentage,
+        p2_0.end_date,
+        p2_0.start_date,
+        u1_0.id,
+        u1_0.email,
+        u1_0.firstname,
+        u1_0.lastname,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        products p1_0 
+    left join
+        categories c1_0 
+            on c1_0.id=p1_0.category_id 
+    left join
+        promotions p2_0 
+            on p2_0.id=p1_0.promotion_id 
+    left join
+        users u1_0 
+            on u1_0.id=p1_0.user_id 
+    where
+        p1_0.id=?
+21:50:06.794 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        count(*) 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+21:50:06.797 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.id,
+        c1_0.id,
+        c1_0.label,
+        p1_0.description,
+        p1_0.image_path,
+        p1_0.label,
+        p1_0.prix,
+        p2_0.id,
+        p2_0.discount_percentage,
+        p2_0.end_date,
+        p2_0.start_date,
+        u1_0.id,
+        u1_0.email,
+        u1_0.firstname,
+        u1_0.lastname,
+        u1_0.password,
+        u1_0.role,
+        u1_0.username 
+    from
+        products p1_0 
+    left join
+        categories c1_0 
+            on c1_0.id=p1_0.category_id 
+    left join
+        promotions p2_0 
+            on p2_0.id=p1_0.promotion_id 
+    left join
+        users u1_0 
+            on u1_0.id=p1_0.user_id 
+    where
+        p1_0.id=?
+21:50:06.798 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.user_id,
+        p1_0.id,
+        c1_0.id,
+        c1_0.label,
+        p1_0.description,
+        p1_0.image_path,
+        p1_0.label,
+        p1_0.prix,
+        p2_0.id,
+        p2_0.discount_percentage,
+        p2_0.end_date,
+        p2_0.start_date 
+    from
+        products p1_0 
+    left join
+        categories c1_0 
+            on c1_0.id=p1_0.category_id 
+    left join
+        promotions p2_0 
+            on p2_0.id=p1_0.promotion_id 
+    where
+        p1_0.user_id=?
+21:50:06.808 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.id,
+        p1_0.discount_percentage,
+        p1_0.end_date,
+        p1_0.start_date 
+    from
+        promotions p1_0 
+    where
+        p1_0.id=?
+21:50:06.811 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    update
+        products 
+    set
+        category_id=?,
+        description=?,
+        image_path=?,
+        label=?,
+        prix=?,
+        promotion_id=?,
+        user_id=? 
+    where
+        id=?
+21:50:06.861 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json, text/javascript, */*;q=0.01] and supported [application/json, application/*+json]
+21:50:06.865 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [org.hibernate.LazyInitializationException: failed to lazily initialize a collection of role: com.pro (truncated)...]
+21:50:06.879 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:06.134 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.174 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.175 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.175 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.175 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.177 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.177 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.177 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.177 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.178 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.192 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/products/listProducts", parameters={}
+22:05:06.194 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.promoweb.mercadona.controller.ProductController#listAllProducts(Model, int, int, String)
+22:05:06.727 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         p1_0.id,
         p1_0.category_id,
@@ -20,7 +190,7 @@
         p1_0.user_id 
     from
         products p1_0 offset ? rows fetch first ? rows only
-23:56:30.513 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.791 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         c1_0.id,
         c1_0.label 
@@ -28,7 +198,7 @@
         categories c1_0 
     where
         c1_0.id=?
-23:56:30.514 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.812 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         u1_0.id,
         u1_0.email,
@@ -41,7 +211,7 @@
         users u1_0 
     where
         u1_0.id=?
-23:56:30.515 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.820 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         c1_0.id,
         c1_0.label 
@@ -49,7 +219,15 @@
         categories c1_0 
     where
         c1_0.id=?
-23:56:30.516 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.827 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.label 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+22:05:06.917 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         u1_0.id,
         u1_0.email,
@@ -62,23 +240,17 @@
         users u1_0 
     where
         u1_0.id=?
-23:56:30.517 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.922 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
-        c1_0.id,
-        c1_0.label 
+        p1_0.id,
+        p1_0.discount_percentage,
+        p1_0.end_date,
+        p1_0.start_date 
     from
-        categories c1_0 
+        promotions p1_0 
     where
-        c1_0.id=?
-23:56:30.518 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
-    select
-        c1_0.id,
-        c1_0.label 
-    from
-        categories c1_0 
-    where
-        c1_0.id=?
-23:56:30.519 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+        p1_0.id=?
+22:05:06.946 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         u1_0.id,
         u1_0.email,
@@ -91,89 +263,117 @@
         users u1_0 
     where
         u1_0.id=?
-23:56:30.520 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+22:05:06.948 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.id,
+        c1_0.label 
+    from
+        categories c1_0 
+    where
+        c1_0.id=?
+22:05:06.950 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.id,
+        p1_0.discount_percentage,
+        p1_0.end_date,
+        p1_0.start_date 
+    from
+        promotions p1_0 
+    where
+        p1_0.id=?
+22:05:06.965 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
     select
         count(p1_0.id) 
     from
         products p1_0
-23:56:30.522 [http-nio-8080-exec-3] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, application/xml;q=0.9, */*;q=0.8]
-23:56:30.555 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.576 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.576 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap/5.2.3/css/bootstrap.min.css", parameters={}
-23:56:30.577 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap/5.2.3/js/bootstrap.bundle.js", parameters={}
-23:56:30.577 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap-icons/1.10.5/font/bootstrap-icons.css", parameters={}
-23:56:30.577 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.577 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/jquery/3.6.4/jquery.min.js", parameters={}
-23:56:30.577 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
-23:56:30.581 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.582 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.582 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.582 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.603 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/061d1399-03a7-4236-ac0d-b73545b4307b_decoration.jpg", parameters={}
-23:56:30.604 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/76f87249-e1b3-4545-832e-9e6a17c6f108_extencil_b.jpg", parameters={}
-23:56:30.604 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/f6832606-fc42-422f-9f0a-b90fe1c471d3_lampe_v.jpg", parameters={}
-23:56:30.604 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.604 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/ef0f30b8-6552-4ad2-896a-2999450b4a77_malette.jpg", parameters={}
-23:56:30.605 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/1d945120-6bc0-4738-8487-f6ca32ec9808_bath-set.jpg", parameters={}
-23:56:30.605 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
-23:56:30.607 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.607 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.607 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.608 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
-23:56:30.608 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:07.101 [http-nio-8080-exec-9] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, application/xml;q=0.9, */*;q=0.8]
+22:05:07.749 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:07.968 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.969 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.969 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.970 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.971 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.971 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.972 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap/5.2.3/js/bootstrap.bundle.js", parameters={}
+22:05:07.972 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap/5.2.3/css/bootstrap.min.css", parameters={}
+22:05:07.972 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/bootstrap-icons/1.10.5/font/bootstrap-icons.css", parameters={}
+22:05:07.972 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.972 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/webjars/jquery/3.6.4/jquery.min.js", parameters={}
+22:05:07.989 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.989 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.990 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:07.992 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+22:05:08.016 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.017 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.019 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.022 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.134 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.134 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.135 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.135 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.136 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.136 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.137 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.137 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.138 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.138 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.138 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.138 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.139 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.139 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.139 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.139 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.139 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.140 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.140 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.140 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.140 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.140 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.141 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/68988b41-f18b-4029-ad39-f468610126f6_decoration_arc.jpg", parameters={}
+22:05:08.141 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.142 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.142 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.142 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.142 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/76f87249-e1b3-4545-832e-9e6a17c6f108_extencil_b.jpg", parameters={}
+22:05:08.142 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.142 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.143 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.143 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.144 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.144 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.144 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.144 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.144 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.145 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.145 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/e310538d-933e-45ac-b9fd-3ca9d6897cc9_chaussette.jpg", parameters={}
+22:05:08.145 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.145 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.145 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/061d1399-03a7-4236-ac0d-b73545b4307b_decoration.jpg", parameters={}
+22:05:08.146 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.149 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.149 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.151 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.151 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.151 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.151 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.151 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.151 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.151 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+22:05:08.152 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.152 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.152 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.153 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.154 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.154 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/assets/b04bb7db-1b87-49c3-9bc5-48c244618bc7_connector.jpg", parameters={}
+22:05:08.155 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+22:05:08.161 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK

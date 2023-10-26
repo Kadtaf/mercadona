@@ -81,8 +81,18 @@ public class Product {
         return prix;
     }
 
+    public void setPrix(double prix, double discount) {
+
+        if (discount != 0) {
+            this.prix = prix * (1 - discount / 100);
+        } else {
+            this.prix = prix;
+        }
+    }
+
     public void setPrix(double prix) {
-        this.prix = prix;
+
+            this.prix = prix;
     }
 
     public String getImagePath() {

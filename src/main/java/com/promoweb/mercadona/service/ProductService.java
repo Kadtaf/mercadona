@@ -3,6 +3,7 @@ package com.promoweb.mercadona.service;
 import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
+import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.repository.ProductRepository;
 import com.promoweb.mercadona.repository.CategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
