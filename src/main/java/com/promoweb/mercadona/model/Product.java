@@ -3,6 +3,7 @@ package com.promoweb.mercadona.model;
 
 import jakarta.persistence.*;
 
+import java.text.DecimalFormat;
 
 
 @Entity
@@ -131,4 +132,5 @@ public class Product {
                 ", user=" + user +
                 '}';
     }
+
 }

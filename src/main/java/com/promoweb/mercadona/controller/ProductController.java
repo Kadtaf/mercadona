@@ -27,8 +27,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -60,22 +62,25 @@ public class ProductController {
     public String listAllProducts(Model model,
                                   @RequestParam(name = "page", defaultValue = "0") int page,
                                   @RequestParam(name = "size", defaultValue = "5") int size,
-                                  @RequestParam(name = "keyword", defaultValue = "") String kw) {
+                                  @RequestParam(name = "category", defaultValue ="0") String category) {
         try {
-            // Recherche la liste des produits avec pagination
-            Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
 
+            // Recherche la liste des produits avec pagination
+           // Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
+            Page<Product> pageProducts = productService.findProduct(Long.parseLong(category), PageRequest.of(page, size));
             model.addAttribute("products", pageProducts.getContent());
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
-            model.addAttribute("keyword", kw);
-
-            return "/products/catalogue";
+            model.addAttribute("keyword", category);
+            
         } catch (Exception e) {
+
             logger.error("Une erreur s'est produite lors de la récupération des produits.", e);
-            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
-            throw new RuntimeException(errorMessage, e);
+            String errorMessage = "Une erreur s'est produite lors de la récupération des produits.";
+            model.addAttribute("errorMessage", errorMessage);
+
         }
+        return "/products/catalogue";
     }
 
     @GetMapping("/")
@@ -287,12 +292,11 @@ public class ProductController {
 
     @PostMapping("/savePromotion")
     @ResponseBody
-    public Product savePromotion(
-                                         @RequestParam Long productId,
-                                     @RequestParam String startDate,
-                                     @RequestParam String endDate,
-                                     @RequestParam double discountPercentage,
-                                     RedirectAttributes redirectAttributes) {
+    public Product savePromotion(@RequestParam Long productId,
+                                 @RequestParam String startDate,
+                                 @RequestParam String endDate,
+                                 @RequestParam double discountPercentage,
+                                 RedirectAttributes redirectAttributes) {
        /* HashMap<String, String > cars = new HashMap<>();
         cars.put("1",Long.toString(productId));
         cars.put("2", startDate);
@@ -304,37 +308,10 @@ public class ProductController {
         Product product = productService.getProductById(productId);
         product.setPromotion(promotion);
         product.setPrix(product.getPrix(), discountPercentage);
+
         productService.updateProduct(productId, product);
 
-            return product;
-      /* try {
-            // Récupérez le produit par son ID
-
-
-            if (product == null) {
-                // Gérez le cas où le produit n'est pas trouvé
-              //  return "redirect:/listProducts";
-            }
-
-            // Créez une nouvelle promotion
-
-
-
-            // Associez la promotion au produit
-
-
-            // Enregistrez le produit (la promotion sera enregistrée en cascade)
-
-
-            // Ajoutez un message de succès pour afficher à la page suivante
-            redirectAttributes.addFlashAttribute("successMessage", "Promotion enregistrée avec succès");
-
-            // Redirigez vers la liste des produits
-           // return "redirect:/listProducts";
-        } catch (Exception e) {
-            // Gérez les erreurs d'enregistrement de la promotion
-           // return "redirect:/listProducts?error=savePromotion";
-        }*/
+        return product;
     }
 
     @GetMapping("/byUser/{user_id}")
@@ -355,10 +332,11 @@ public class ProductController {
     }
 
     @GetMapping("/byCategory/{category_id}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long category_id) {
+    public String getProductsByCategory(@PathVariable Long category_id, Model model) {
         try {
             List<Product> productsByCategory = productService.getProductsByCategory(category_id);
-            return ResponseEntity.ok(productsByCategory);
+            model.addAttribute("productsByCategory", productsByCategory);
+            return "fragments/product-list:: product-list";
 
         } catch (NoProductsFoundException e) {
             logger.warn("Exception lors de la récupération des produits par catégorie: {}", e.getMessage());
@@ -367,7 +345,13 @@ public class ProductController {
 
         } catch (Exception e) {
             logger.error("Une erreur s'est produite lors de la récupération des produits par catégorie.", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur interne du serveur", e);
         }
     }
+
+   /* @GetMapping("/test")
+    public String getTest() {
+        return "/fragments/test";
+    }*/
+
 }

@@ -117,6 +117,16 @@ public class ProductService {
         }
     }
 
+    public Page<Product> findProduct(Long category, Pageable pageable) {
+        if (category == 0) {
+            // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
+            return productRepository.findAll(pageable);
+        } else {
+            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
+            return productRepository.findAllByCategoryId(category, pageable);
+        }
+    }
+
     public String uploadImage(MultipartFile imageFile) throws IOException {
         // Vérifiez si un fichier a été fourni
         if (imageFile != null && !imageFile.isEmpty()) {

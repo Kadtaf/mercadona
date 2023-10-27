@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Liste des Produits </title>
+    <link th:href="@{/css/promo.css}" rel="stylesheet">
     <script th:inline="javascript">
 
         function showPromotionForm(productId, productPrice) {
@@ -117,41 +118,54 @@
 
         }
 
+       /* function test() {
+            let XHR = new XMLHttpRequest();
+            let toto = "toto";
+            XHR.open('get', '/api/products/listProducts');
+            XHR.send();
+            XHR.addEventListener('readystatechange', function() {
+                toto = XHR;
+                console.log(XHR);
+                if (XHR.readyState === XMLHttpRequest.DONE && XHR.status === 200) {
+
+                    document.getElementById("test").innerHTML = XHR.responseText;
+                }
+            });
+        }*/
+
 
     </script>
     <!--<script th:src="@{/static/jscript/promo.js}" type="application/javascript" async defer="defer"></script>-->
 </head>
 
 <body>
+
 <div layout:fragment="content">
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-
-            <div th:if="${param.successMessage}" class="alert alert-success" role="alert">
-                <strong th:text="${param.successMessage}"></strong>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                <strong th:text="${errorMessage}"></strong>
             </div>
-
-            <!-- Ajoutez cela pour afficher le message d'erreur -->
-            <div th:if="${param.error}" class="alert alert-danger" role="alert">
-                <strong>Une erreur s'est produite lors de l'enregistrement de la promotion.</strong>
-            </div>
-
             <h1>Catalogue</h1>
             <a th:href="@{'../products/formProduct'}" class="btn btn-dark">Nouveau Produit</a>
         </div>
         <div class="row row-cols-1 row-cols-md-4 g-4">
-            <!-- Thymeleaf iteration to display products -->
             <div th:each="product : ${products}" class="col">
                 <div class="card h-100" th:id="|cardId-${product.id}|">
                     <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${product.label}"></h5>
                         <p class="card-text" th:text="${product.description}"></p>
-                        <span class="card-text" th:id="|priceId-${product.id}|">[[${product.prix}]]</span>
-                        <p th:if="${product.promotion != null}" class="card-text text-danger">Promotion : [[${product.promotion.discountPercentage}]] %</p>
-                        <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
-                   </div>
-                    <div class="d-flex justify-content-between">
+                        <div th:if="${product.promotion != null}" class="card-text">
+                            <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
+                            <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
+                            <span class="card-text">De : [[${product.promotion.startDate}]]</span>
+                            <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
+                            <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
+                        </div>
+                        <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
+                    </div>
+                    <div class="d-flex justify-between card-footer">
                         <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
                             <i class="bi bi-pencil"></i>
                         </a>
@@ -164,18 +178,19 @@
                 </div>
             </div>
         </div>
-        <!-- Pagination -->
-        <nav aria-label="Page navigation mt-5">
-            <ul class="nav nav-pills">
-                <li th:each="page,status:${pages}">
-                    <a
-                            th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                            th:href="@{/api/products/listProducts(page=${status.index}, keyword=${keyword})}"
-                            th:text="${status.index + 1}">
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <div class="card-footer mt-3">
+           <nav aria-label="Page navigation mt-5">
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a
+                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                                th:href="@{/api/products/listProducts(page=${status.index}, keyword=${keyword})}"
+                                th:text="${status.index + 1}">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
     <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -219,9 +234,8 @@
             </div>
         </div>
     </div>
-
 </div>
-<!-- Formulaire de promotion (initiallement caché) -->
+
 
 
 
