@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,25 +113,33 @@ public class ProductService {
             // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
             return productRepository.findAll(pageable);
         } else {
-            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
+            // Si un mot-clé est fourni, recherchez les produits par mot-clé avec pagination
             return productRepository.findByCategoryContains(kw, pageable);
         }
     }
 
     public Page<Product> findProduct(Long category, Pageable pageable) {
+        Page<Product> products;
         if (category == 0) {
-            // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
+            // Si la catégorie est vide, récupérez tous les produits avec pagination
             return productRepository.findAll(pageable);
         } else {
-            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
-            return productRepository.findAllByCategoryId(category, pageable);
+            // Si une catégorie est fourni, recherchez les produits par catégorie avec pagination
+            products =  productRepository.findAllByCategoryId(category, pageable);
+            System.out.println(products);
         }
+
+        if (products.isEmpty()) {
+
+            throw new NoProductsFoundException("Aucun produit trouvé dans cette catégorie.");
+        }
+        return products;
     }
 
     public String uploadImage(MultipartFile imageFile) throws IOException {
         // Vérifiez si un fichier a été fourni
         if (imageFile != null && !imageFile.isEmpty()) {
-            // Obtenez le chemin du répertoire où vous souhaitez stocker les images (vous devez définir ce chemin selon votre configuration)
+            // Obtenez le chemin du répertoire où vous souhaitez stocker les images
             String uploadDir ="src/main/resources/static/assets/";
 
             // Assurez-vous que le répertoire existe, sinon créez-le
@@ -152,7 +161,7 @@ public class ProductService {
             return fileName;
         }
 
-        // Si aucun fichier n'est fourni, retournez une chaîne vide ou null selon vos besoins
+        // Si aucun fichier n'est fourni, retournez une chaîne vide ou null
         return "";
     }
 

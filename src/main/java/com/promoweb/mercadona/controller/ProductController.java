@@ -30,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -58,21 +57,25 @@ public class ProductController {
         this.userService = userService;
     }
 
+    @GetMapping("/products")
+    public String products() {
+        return "products/listProducts";
+    }
+
     @GetMapping("/listProducts")
     public String listAllProducts(Model model,
                                   @RequestParam(name = "page", defaultValue = "0") int page,
                                   @RequestParam(name = "size", defaultValue = "5") int size,
-                                  @RequestParam(name = "category", defaultValue ="0") String category) {
+                                  @RequestParam(name = "category", defaultValue ="0") Long category) {
         try {
-
             // Recherche la liste des produits avec pagination
            // Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
-            Page<Product> pageProducts = productService.findProduct(Long.parseLong(category), PageRequest.of(page, size));
+            Page<Product> pageProducts = productService.findProduct(category, PageRequest.of(page, size));
             model.addAttribute("products", pageProducts.getContent());
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
-            model.addAttribute("keyword", category);
-            
+            model.addAttribute("category", category);
+
         } catch (Exception e) {
 
             logger.error("Une erreur s'est produite lors de la récupération des produits.", e);
@@ -80,7 +83,7 @@ public class ProductController {
             model.addAttribute("errorMessage", errorMessage);
 
         }
-        return "/products/catalogue";
+        return "products/produtcsFragment";
     }
 
     @GetMapping("/")

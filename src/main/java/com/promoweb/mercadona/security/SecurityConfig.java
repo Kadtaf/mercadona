@@ -36,7 +36,15 @@ public class SecurityConfig {
             auth.requestMatchers(HttpMethod.GET, "/api/users/formUser/**", "/api/users/listUser/**", "/api/products/savePromotion", "/api/users/updateUser/**", "/swagger-ui.html").hasAnyRole("ADMIN", "SUPER_ADMIN");
             auth.anyRequest().authenticated();
 
-        }).formLogin(Customizer.withDefaults()).build();
+        }).formLogin(Customizer.withDefaults())
+                .logout(logout-> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .build();
     }
 
     @Bean

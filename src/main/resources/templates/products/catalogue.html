@@ -5,240 +5,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Liste des Produits </title>
+    <script th:src="@{/jscript/promo.js}" type="text/javascript" th:defer="defer"></script>
     <link th:href="@{/css/promo.css}" rel="stylesheet">
-    <script th:inline="javascript">
-
-        function showPromotionForm(productId, productPrice) {
-                console.log(productId);
-                $('#productIdModal').val(productId)
-                console.log(productPrice);
-                console.log( $('#priceId-' + productId).text());
-                $('#priceModal').val(productPrice);
-
-                // $('#addPromotionModal').style.display = 'block';
-
-        }
-        //document.getElementById('addPromotionModal').addEventListener('submit', savePromotion());
-        function savePromotion() {
-            console.log("tototo");
-            // Récupérer les valeurs du formulaire
-            let startDate = $('#startDateModal').val();
-            let endDate = $('#endDateModal').val();
-            let discountPercentage = $('#discountPercentageModal').val();
-            let productId = $('#productIdModal').val();
-            let productPrice = $('#priceModal').val();
-            console.log(startDate);
-            console.log(endDate);
-            console.log(discountPercentage);
-            console.log(productId);
-            console.log(productPrice);
-            let form = document.getElementById('promotionForm');
-            let datas = new FormData(form);
-            console.log(datas);
-            /*for (var [key, value] of data) {
-
-                console.log(key, value)
-
-            }*/
-            // Effectuer le calcul du nouveau prix
-
-          /* let newPrice = productPrice * (1 - discountPercentage / 100);
-            console.log(newPrice);
-            console.log( document.getElementById('priceId-' + productId));
-            $('#priceId-' + productId).text('Prix : ' + newPrice);*/
-            $('#promotionForm')[0].reset();
-            $('#addPromotionModal').hide();
-            $('.modal-backdrop').remove();
-
-            let token = $("meta[name='_csrf']").attr("content");
-            console.log(token);
-            let request =
-                $.ajax({
-                    type: "POST",
-                    url: "/api/products/savePromotion",
-                    data:datas,
-                    dataType: 'json',
-                    timeout: 120000, //2 Minutes
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-
-                });
-
-            request.done(function (response) {
-                //Code à jouer en cas d'éxécution sans erreur du script du PHP
-                console.log(response);
-                //alert("Ok");
-                $('#promotionId-' + productId).text(response.promotion.startDate + ' ' + response.promotion.endDate + ': ' + response.promotion.discountPercentage + '%');
-                $('#priceId-' + productId).text('Prix : ' + response.prix);
-            });
-            request.fail(function (http_error) {
-                //Code à jouer en cas d'éxécution en erreur du script du PHP
-
-                let server_msg = http_error.responseText;
-                let code = http_error.status;
-                let code_label = http_error.statusText;
-                alert("Erreur "+code+" ("+code_label+") : "  + server_msg);
-            });
-
-            request.always(function () {
-                //Code à jouer après done OU fail dans tous les cas
-            });
-            return false;
-            // Effectuer une requête POST pour enregistrer la promotion
-           /* let xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/products/savePromotion', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    // Mettre à jour l'affichage avec les détails de la promotion
-                    document.getElementById('priceId-' + productId).innerText = 'Prix : ' + newPrice.toFixed(2);
-                    //document.getElementById('startDate-' + productId).innerText = 'Date de début de promotion : ' + startDate;
-                    //document.getElementById('endDate-' + productId).innerText = 'Date de fin de promotion : ' + endDate;
-
-                    //Vider et Cacher le formulaire après l'enregistrement
-                    document.getElementById('promotionForm-' + productId).style.display = 'none';
-
-                } else if (xhr.readyState === 4 && xhr.status !== 200) {
-                    alert('Une erreur s\'est produite lors de l\'enregistrement de la promotion.');
-                }
-            };
-
-            // Construire les données POST
-            let data = 'productId=' + encodeURIComponent(productId)
-                + '&startDate=' + encodeURIComponent(startDate)
-                + '&endDate=' + encodeURIComponent(endDate)
-                + '&discountPercentage=' + encodeURIComponent(discountPercentage);
-
-            // Envoyer la requête POST avec les données
-            xhr.send(data);*/
-
-
-        }
-
-       /* function test() {
-            let XHR = new XMLHttpRequest();
-            let toto = "toto";
-            XHR.open('get', '/api/products/listProducts');
-            XHR.send();
-            XHR.addEventListener('readystatechange', function() {
-                toto = XHR;
-                console.log(XHR);
-                if (XHR.readyState === XMLHttpRequest.DONE && XHR.status === 200) {
-
-                    document.getElementById("test").innerHTML = XHR.responseText;
-                }
-            });
-        }*/
-
-
-    </script>
-    <!--<script th:src="@{/static/jscript/promo.js}" type="application/javascript" async defer="defer"></script>-->
 </head>
 
 <body>
-
-<div layout:fragment="content">
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-                <strong th:text="${errorMessage}"></strong>
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                    <strong th:text="${errorMessage}"></strong>
+                </div>
+                <h1>Catalogue</h1>
+                <a th:href="@{'../products/formProduct'}" class="btn btn-dark">Nouveau Produit</a>
             </div>
-            <h1>Catalogue</h1>
-            <a th:href="@{'../products/formProduct'}" class="btn btn-dark">Nouveau Produit</a>
-        </div>
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <div th:each="product : ${products}" class="col">
-                <div class="card h-100" th:id="|cardId-${product.id}|">
-                    <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${product.label}"></h5>
-                        <p class="card-text" th:text="${product.description}"></p>
-                        <div th:if="${product.promotion != null}" class="card-text">
-                            <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
-                            <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
-                            <span class="card-text">De : [[${product.promotion.startDate}]]</span>
-                            <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
-                            <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
+            <div class="row row-cols-1 row-cols-md-5 g-4">
+                <div th:each="product : ${products}" class="col">
+                    <div class="card h-100" th:id="|cardId-${product.id}|">
+                        <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${product.label}"></h5>
+                            <p class="card-text" th:text="${product.description}"></p>
+                            <div th:if="${product.promotion != null}" class="card-text">
+                                <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
+                                <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
+                                <span class="card-text">De : [[${product.promotion.startDate}]]</span>
+                                <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
+                                <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
+                            </div>
+                            <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
                         </div>
-                        <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
-                    </div>
-                    <div class="d-flex justify-between card-footer">
-                        <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#addPromotionModal" class="btn btn-dark" th:onclick="|showPromotionForm(${product.id}, ${product.prix})|">Ajouter une promotion</button>
-                        <a onclick="return confirm('Etes vous sure?')"
-                           th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                        <div class="d-flex justify-between card-footer">
+                            <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#addPromotionModal" class="btn btn-dark" th:onclick="|showPromotionForm(${product.id}, ${product.prix})|">Ajouter une promotion</button>
+                            <a onclick="return confirm('Etes vous sure?')"
+                               th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer mt-3">
-           <nav aria-label="Page navigation mt-5">
-                <ul class="nav nav-pills">
-                    <li th:each="page,status:${pages}">
-                        <a
+            <div class="card-footer mt-3">
+               <nav aria-label="Page navigation mt-5">
+                    <ul class="nav nav-pills">
+                        <li th:each="page,status:${pages}">
+                            <a
                                 th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
                                 th:href="@{/api/products/listProducts(page=${status.index}, keyword=${keyword})}"
                                 th:text="${status.index + 1}">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
-    </div>
-    <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addPromotionModalLabel">Ajouter une Promotion</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Formulaire pour ajouter une promotion -->
-                    <form th:id="promotionForm">
-                        <div class="mb-3">
+        <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPromotionModalLabel">Ajouter une Promotion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Formulaire pour ajouter une promotion -->
+                        <form th:id="promotionForm">
+                            <div class="mb-3">
 
-                            <label for="startDateModal" class="form-label">Date de début</label>
-                            <input type="date" class="form-control" id="startDateModal" name="startDate" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="endDateModal" class="form-label">Date de fin</label>
-                            <input type="date" class="form-control" id="endDateModal" name="endDate" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="priceModal" class="form-label">Prix</label>
-                            <input type="text" class="form-control" id="priceModal" name="price" disabled required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="discountPercentageModal" class="form-label">Pourcentage de Remise</label>
-                            <select class="form-control" id="discountPercentageModal" name="discountPercentage" required>
-                                <option th:value="5">5%</option>
-                                <option th:value="10">10%</option>
-                                <option th:value="15">15%</option>
-                                <option th:value="20">20%</option>
-                                <option th:value="25">25%</option>
-                            </select>
-                           <!-- <input type="number" class="form-control" id="discountPercentageModal" name="discountPercentage" required>-->
-                        </div>
-                        <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
-                        <input type="text" class="form-control" id="productIdModal" name="productId" required>
-                        <button type="button" th:onclick="|savePromotion()|" class="btn btn-primary">Enregistrer</button>
-                    </form>
+                                <label for="startDateModal" class="form-label">Date de début</label>
+                                <input type="date" class="form-control" id="startDateModal" name="startDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDateModal" class="form-label">Date de fin</label>
+                                <input type="date" class="form-control" id="endDateModal" name="endDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="priceModal" class="form-label">Prix</label>
+                                <input type="text" class="form-control" id="priceModal" name="price" disabled required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="discountPercentageModal" class="form-label">Pourcentage de Remise</label>
+                                <select class="form-control" id="discountPercentageModal" name="discountPercentage" required>
+                                    <option th:value="5">5%</option>
+                                    <option th:value="10">10%</option>
+                                    <option th:value="15">15%</option>
+                                    <option th:value="20">20%</option>
+                                    <option th:value="25">25%</option>
+                                </select>
+                               <!-- <input type="number" class="form-control" id="discountPercentageModal" name="discountPercentage" required>-->
+                            </div>
+                            <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
+                            <input type="text" class="form-control" id="productIdModal" name="productId" required>
+                            <button type="button" th:onclick="|savePromotion()|" class="btn btn-primary">Enregistrer</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-
-
-
 </body>
 </html>

@@ -10,11 +10,14 @@
 <div layout:fragment="content">
     <div class="p-3">
         <div class="card">
-            <div class="card-header">Liste des Utilisateurs</div>
+            <div class="card-header d-flex justify-content-between align-items-center mb-3">
+               <h2>Liste des Utilisateurs</h2>
+                <a th:href="@{/api/users/formUser}" class="btn btn-dark">Nouveau utilisateur</a>
+            </div>
             <div class="card-body">
                 <!-- Formulaire de recherche -->
                 <form method="GET" th:action="@{index}">
-                    <label>Keyword:</label>
+                    <label>Mot clé:</label>
                     <input type="text" name="keyword" th:value="${keyword}">
                     <button type="submit" class="btn btn-info">
                         <i class="bi bi-search"></i>

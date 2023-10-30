@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Liste des Produits </title>
+    <script th:src="@{/jscript/promo.js}" type="text/javascript" th:defer="defer"></script>
+    <link th:href="@{/css/promo.css}" rel="stylesheet">
+</head>
+<body th:onload="|getProductsByCategory(${category} == null ? 0 : ${category}, ${page} == null ? 0 : ${page})|">
+    <div layout:fragment="content">
+        <div class="container mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                    <strong th:text="${errorMessage}"></strong>
+                </div>
+                <h1>Catalogue</h1>
+                <a th:href="@{'../products/formProduct'}" class="btn btn-dark">Nouveau Produit</a>
+            </div>
+            <div th:id="listProducts">
+
+            </div>
+        </div>
+            <div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPromotionModalLabel">Ajouter une Promotion</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Formulaire pour ajouter une promotion -->
+                            <form th:id="promotionForm">
+                                <div class="mb-3">
+                                    <label for="startDateModal" class="form-label">Date de début</label>
+                                    <input type="date" class="form-control" id="startDateModal" name="startDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endDateModal" class="form-label">Date de fin</label>
+                                    <input type="date" class="form-control" id="endDateModal" name="endDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="priceModal" class="form-label">Prix</label>
+                                    <input type="text" class="form-control" id="priceModal" name="price" disabled required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="discountPercentageModal" class="form-label">Pourcentage de Remise</label>
+                                    <select class="form-control" id="discountPercentageModal" name="discountPercentage" required>
+                                        <option th:value="5">5%</option>
+                                        <option th:value="10">10%</option>
+                                        <option th:value="15">15%</option>
+                                        <option th:value="20">20%</option>
+                                        <option th:value="25">25%</option>
+                                    </select>
+                                    <!-- <input type="number" class="form-control" id="discountPercentageModal" name="discountPercentage" required>-->
+                                </div>
+                                <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
+                                <input type="text" class="form-control" id="productIdModal" name="productId" required>
+                                <button type="button" th:onclick="|savePromotion()|" class="btn btn-primary">Enregistrer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</body>
+</html>
+
