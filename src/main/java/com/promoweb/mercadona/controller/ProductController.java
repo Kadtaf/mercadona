@@ -11,6 +11,7 @@ import com.promoweb.mercadona.service.ProductService;
 import com.promoweb.mercadona.service.PromotionService;
 import com.promoweb.mercadona.service.UserService;
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,8 +54,6 @@ public class ProductController {
         this.productService = productService;
         this.categoryService = categoryService;
         this.promotionService = promotionService;
-
-
         this.userService = userService;
     }
 
@@ -68,14 +68,15 @@ public class ProductController {
                                   @RequestParam(name = "size", defaultValue = "5") int size,
                                   @RequestParam(name = "category", defaultValue ="0") Long category) {
         try {
-            // Recherche la liste des produits avec pagination
-           // Page<Product> pageProducts = productService.findProductsWithPagination(kw, PageRequest.of(page, size));
             Page<Product> pageProducts = productService.findProduct(category, PageRequest.of(page, size));
             model.addAttribute("products", pageProducts.getContent());
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
             model.addAttribute("category", category);
 
+        } catch (NoProductsFoundException e) {
+            String errorMessage = e.getMessage();
+            model.addAttribute("errorMessage", errorMessage);
         } catch (Exception e) {
 
             logger.error("Une erreur s'est produite lors de la récupération des produits.", e);
@@ -141,12 +142,19 @@ public class ProductController {
     }
 
     @PostMapping("/saveProduct")
-    public String createProduct(@ModelAttribute Product product,
+    public String createProduct(@ModelAttribute @Valid Product product,
+                                BindingResult bindingResult,
                                 @RequestParam(name = "userId", required = true) Long user_id,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) {
+        model.addAttribute("product", new Product());
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:../saveProduct";
+        }
 
         User user = userService.getUserById(user_id);
         product.setUser(user);
@@ -168,7 +176,7 @@ public class ProductController {
             logger.error("Une erreur s'est produite lors de la création du produit." + e.getMessage());
             System.out.println(e.getMessage());
             model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
-            return "/errors/error";
+            return "errors/error";
         }
     }
 
@@ -200,32 +208,39 @@ public class ProductController {
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.");
-            return "errors/error";
+            return "/errors/error";
         }
     }
 
     @PostMapping("/updateProduct/{id}")
     public String updateProduct(@PathVariable Long id,
-                                @ModelAttribute Product product,
+                                @ModelAttribute @Valid Product product,
+                                BindingResult bindingResult,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
-                                Model model) {
-
-            // Vérifiez si une catégorie existante est sélectionnée
+                                Model model) throws EntityNotFoundException {
+        System.out.println("--------------------------------------------\n");
+        System.out.println(bindingResult.hasErrors());
+        System.out.println("--------------------------------------------\n");
+        if (bindingResult.hasErrors()) {
+            System.out.println("-----------------toto---------------------------\n");
+            //model.addAttribute("errors", bindingResult.getAllErrors());
+            //model.addAttribute("errors", bindingResult.getAllErrors());
+            return "products/editProduct";
+        }
 
         try {
             createCategoryByNewProduct(product, category_id, newCategoryLabel);
             product.setImagePath(productService.uploadImage(imageFile));
             productService.updateProduct(id, product);
 
-            return "redirect:../listProducts";
+            return "redirect:../products";
 
         } catch (EntityNotFoundException e) {
-            // Gestion spécifique de l'exception EntityNotFoundException
             logger.warn("Produit non trouvé lors de la mise à jour: {}", e.getMessage());
             model.addAttribute("error", "Produit non trouvé lors de la mise à jour.");
-            return "/errors/error";
+            return "errors/error";
         } catch (Exception e) {
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de la mise à jour du produit.", e);
@@ -259,7 +274,7 @@ public class ProductController {
             System.out.println(product);
             productService.deleteProduct(id);
 
-            return "redirect:../listProducts";
+            return "redirect:../products";
 
         } catch (EntityNotFoundException e) {
 
@@ -298,14 +313,7 @@ public class ProductController {
     public Product savePromotion(@RequestParam Long productId,
                                  @RequestParam String startDate,
                                  @RequestParam String endDate,
-                                 @RequestParam double discountPercentage,
-                                 RedirectAttributes redirectAttributes) {
-       /* HashMap<String, String > cars = new HashMap<>();
-        cars.put("1",Long.toString(productId));
-        cars.put("2", startDate);
-        cars.put("3", endDate);
-        cars.put("4", Double.toString(discountPercentage));*/
-
+                                 @RequestParam double discountPercentage) {
         Promotion promotion = new Promotion(LocalDate.parse(startDate), LocalDate.parse(endDate), discountPercentage);
         promotionService.addPromotion(promotion);
         Product product = productService.getProductById(productId);
@@ -333,28 +341,5 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    @GetMapping("/byCategory/{category_id}")
-    public String getProductsByCategory(@PathVariable Long category_id, Model model) {
-        try {
-            List<Product> productsByCategory = productService.getProductsByCategory(category_id);
-            model.addAttribute("productsByCategory", productsByCategory);
-            return "fragments/product-list:: product-list";
-
-        } catch (NoProductsFoundException e) {
-            logger.warn("Exception lors de la récupération des produits par catégorie: {}", e.getMessage());
-            throw new EntityNotFoundException("La category avec l'id : " + category_id + " n'existe pas");
-            //return ResponseEntity.notFound().build();
-
-        } catch (Exception e) {
-            logger.error("Une erreur s'est produite lors de la récupération des produits par catégorie.", e);
-            throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur interne du serveur", e);
-        }
-    }
-
-   /* @GetMapping("/test")
-    public String getTest() {
-        return "/fragments/test";
-    }*/
 
 }

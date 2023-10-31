@@ -10,8 +10,8 @@
     </head>
     <body>
         <div layout:fragment="content">
-            <div class="row mt-3">
-                <div class="col-md-6 offset-3">
+            <div class="row my-5">
+                <div class="col-md-4 offset-3">
                     <div class="card">
                         <div class="card-header">Création d'un nouveau produit</div>
                         <div class="card-body">
@@ -27,15 +27,17 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="label" class="form-label">Label</label>
-                                        <input type="text" class="form-control" id="label" name="label" required>
+                                        <input type="text" class="form-control" id="label" name="label" th:field="${product.label}" required>
+
                                     </div>
                                     <div class="mb-3">
                                         <label for="description" class="form-label">Description</label>
-                                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                                        <textarea class="form-control" id="description" name="description" th:field="${product.description}" rows="3" required></textarea>
+
                                     </div>
                                     <div class="mb-3">
                                         <label for="prix" class="form-label">Prix</label>
-                                        <input type="text" class="form-control" id="prix" name="prix" required>
+                                        <input type="text" class="form-control" id="prix" name="prix" th:field="${product.prix}" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="category" class="form-label">Catégorie</label>

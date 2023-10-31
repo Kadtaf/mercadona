@@ -23,27 +23,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/api/users/index}">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li th:if="${#authorization.expression('permitAll()')}" class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/api/products/products}">Catalogue</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownCategories" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Catégories
-                        </a>
-                        <select class="dropdown-menu" aria-labelledby="navbarDropdown" th:id="selectCategry" th:onchange="getProductsByCategory(this.value)">
-                            <option value="">Choisir une catégorie</option>
-                            <option th:value="2">Mécanique</option>
-                            <option th:value="4">Décoration</option>
-                            <option th:value="5">Eléctricité</option>
-                            <option th:value="6">Beauté, Hygiène</option>
-                            <option th:value="7">Vêtement Homme</option>
-                            <option th:value="0">Tout les produits</option>
-                        </select>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Promotion</a>
                     </li>
-                    <li class="nav-item">
+                    <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
                         <a class="nav-link active" th:href="@{/api/users/index}" >Utilisateurs</a>
                     </li>
                 </ul>
@@ -57,7 +43,11 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" sec:authorize="isAuthenticated()"><span sec:authentication="principal.username"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                    <li>
+                        <form th:method="post" th:action="@{/logout}">
+                            <button class="dropdown-item" th:type="submit">Logout</button>
+                        </form>
+                    </li>
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                 </ul>
             </li>

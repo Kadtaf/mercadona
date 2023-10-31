@@ -2,8 +2,12 @@ package com.promoweb.mercadona.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
-import java.text.DecimalFormat;
+
 
 
 @Entity
@@ -14,8 +18,15 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
-    private String label;
+    @NotBlank(message = "Le champ label ne peut pas être vide")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Le label doit contenir uniquement des lettres")
+    public String label;
+
+    @NotBlank(message = "Le champ description ne peut pas être vide")
     private String description;
+
+    @NotNull(message = "Le champ prix ne peut pas être nul")
+    @DecimalMin(value = "0.01", message = "Le prix doit être un nombre supérieur à zéro")
     private double prix;
     private String imagePath;
 

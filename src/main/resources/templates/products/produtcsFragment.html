@@ -1,32 +1,34 @@
-
-<div class="row row-cols-1 row-cols-md-5 g-4">
-    <div th:each="product : ${products}" class="col">
-      <div class="card h-100" th:id="|cardId-${product.id}|">
-        <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${product.label}"></h5>
-          <p class="card-text" th:text="${product.description}"></p>
-          <div th:if="${product.promotion != null}" class="card-text">
-            <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
-            <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
-            <span class="card-text">De : [[${product.promotion.startDate}]]</span>
-            <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
-            <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
-          </div>
-          <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
+<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+  <strong th:text="${errorMessage}"></strong>
+</div>
+<div class="row row-cols-1 row-cols-md-5 g-4" th:if="${products !=null and !products.isEmpty()}">
+        <div th:each="product : ${products}" class="col">
+            <div class="card h-100" th:id="|cardId-${product.id}|">
+                <img th:src="@{/assets/{fileName}(fileName=${product.imagePath})}" class="card-img-top" alt="Product Image">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.label}"></h5>
+                    <p class="card-text" th:text="${product.description}"></p>
+                    <div th:if="${product.promotion != null}" class="card-text">
+                        <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
+                        <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
+                        <span class="card-text">De : [[${product.promotion.startDate}]]</span>
+                        <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
+                        <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
+                    </div>
+                    <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
+                </div>
+                <div class="d-flex justify-between card-footer" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                  <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#addPromotionModal" class="btn btn-dark" th:onclick="|showPromotionForm(${product.id}, ${product.prix})|">Ajouter une promotion</button>
+                  <a onclick="return confirm('Etes vous sure?')"
+                     th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </div>
+            </div>
         </div>
-        <div class="d-flex justify-between card-footer">
-          <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
-            <i class="bi bi-pencil"></i>
-          </a>
-          <button type="button" data-bs-toggle="modal" data-bs-target="#addPromotionModal" class="btn btn-dark" th:onclick="|showPromotionForm(${product.id}, ${product.prix})|">Ajouter une promotion</button>
-          <a onclick="return confirm('Etes vous sure?')"
-             th:href="@{deleteProduct/{id}(id=${product.id})}" class="btn btn-danger">
-            <i class="bi bi-trash"></i>
-          </a>
-        </div>
-      </div>
-    </div>
 </div>
 <div class="card-footer my-4">
   <nav aria-label="Page navigation mt-5">
@@ -39,4 +41,8 @@
       </li>
     </ul>
   </nav>
+</div>
+
+<div th:unless="${products!=null and !products.isEmpty()}" class="alert alert-danger row row-cols-1 row-cols-md-5 mb-4" role="alert">
+  <h2>La liste des produits est vide</h2>
 </div>

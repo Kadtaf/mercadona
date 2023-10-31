@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="template.html">
 <head>
@@ -8,11 +9,11 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="p-3">
+    <div class="p-3" sec:authorize="isAuthenticated()">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center mb-3">
                <h2>Liste des Utilisateurs</h2>
-                <a th:href="@{/api/users/formUser}" class="btn btn-dark">Nouveau utilisateur</a>
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/api/users/formUser}" class="btn btn-dark">Nouveau utilisateur</a>
             </div>
             <div class="card-body">
                 <!-- Formulaire de recherche -->
@@ -51,7 +52,7 @@
                         <td th:text="${u.email}"></td>
                         <td th:text="${u.role}"></td>
                         <td th:text="${u.username}"></td>
-                        <td>
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
                             <!-- Liens pour supprimer  un utilisateur -->
                             <a onclick="return confirm('Etes vous sure?')"
                                th:href="@{delete/{id}(id=${u.id})
@@ -59,7 +60,7 @@
                                 <i class="bi bi-trash"></i>
                             </a>
                         </td>
-                        <td class="text-center">
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
                             <!-- Liens pour editer  un utilisateur -->
                             <input type="hidden" name="userId" th:value="${u.id}" />
                             <a class="btn btn-success ml-4" th:href="@{editUser/{id}(id=${u.id})}">

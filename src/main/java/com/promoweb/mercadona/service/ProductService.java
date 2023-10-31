@@ -118,7 +118,7 @@ public class ProductService {
         }
     }
 
-    public Page<Product> findProduct(Long category, Pageable pageable) {
+    public Page<Product> findProduct(Long category, Pageable pageable) throws NoProductsFoundException {
         Page<Product> products;
         if (category == 0) {
             // Si la catégorie est vide, récupérez tous les produits avec pagination
@@ -145,7 +145,8 @@ public class ProductService {
             // Assurez-vous que le répertoire existe, sinon créez-le
             File dir = new File(uploadDir);
             if (!dir.exists()) {
-                dir.mkdirs();
+
+                throw new IOException("Le répértoire assets n'existe pas");
             }
 
             // Générez un nom de fichier unique pour éviter les conflits

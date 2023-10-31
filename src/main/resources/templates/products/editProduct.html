@@ -13,29 +13,34 @@
     <div class="row mt-3">
         <div class="col-md-6 offset-3">
             <div class="card">
-                <div class="card-header">Création d'un nouveau produit</div>
+                <div class="card-header">Mise à jour d' produit</div>
                 <div class="card-body">
                     <div class="p-3">
-                        <form th:method="post" th:action="@{../updateProduct/{id}(id=${product.getId()})}" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="userId">ID:</label>
-                                <input type="number" id="userId" name="userId" th:value="${product.getUser().getId()}">
-                            </div>
+                        <form th:method="post" th:action="@{../updateProduct/{id}(id=${product.getId()})}" th:object="${product}" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="imageFile" class="form-label">Image du Produit</label>
                                 <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required th:value="${product.getImagePath()}">
                             </div>
                             <div class="mb-3">
                                 <label for="label" class="form-label">Label</label>
-                                <input type="text" class="form-control" id="label" name="label" required th:value="${product.getLabel()}">
+                                <input type="text" class="form-control" id="label" name="label" required th:value="${product.getLabel()}"  th:field="*{label}">
+                                <div th:if="${#fields.hasErrors('label')}" class="alert alert-danger">
+                                    <p th:errors="*{label}">Erreur de label</p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required th:value="${product.getDescription()}"></textarea>
+                                <textarea class="form-control" id="description" name="description" rows="3" required th:value="${product.getDescription()}" th:field="*{description}"></textarea>
+                                <div  th:if="${#fields.hasErrors('description')}" class="alert alert-danger">
+                                    <p th:errors="*{description}">Erreur de description</p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="prix" class="form-label">Prix</label>
-                                <input type="text" class="form-control" id="prix" name="prix" required th:value="${product.getPrix()}">
+                                <input type="number" th:step=".01" class="form-control" id="prix" name="prix" required th:value="${product.getPrix()}" th:field="*{prix}" >
+                                <div th:if="${#fields.hasErrors('prix')}" class="alert alert-danger">
+                                    <p th:errors="*{prix}">Erreur de prix</p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">Catégorie</label>
@@ -49,10 +54,10 @@
                                 </select>
                             </div>
                             <!-- Champ pour Ajouter une Nouvelle Catégorie -->
-                            <div class="mb-3">
+                            <!--<div class="mb-3">
                                 <label for="newCategoryLabel" class="form-label">Nouvelle Catégorie</label>
                                 <input type="text" class="form-control" id="newCategoryLabel" name="newCategoryLabel">
-                            </div>
+                            </div>-->
                             <input type="hidden" name="_method" value="PUT" />
                             <input type="hidden" name="id" th:value="${product.id}" />
                             <button type="submit" class="btn btn-dark">Enregistrer</button>

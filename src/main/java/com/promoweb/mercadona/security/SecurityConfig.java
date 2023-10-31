@@ -3,14 +3,11 @@ package com.promoweb.mercadona.security;
 import com.promoweb.mercadona.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,21 +27,22 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers(HttpMethod.GET, "/api/users/promotions/listPromotion", "/api/users/categories/listCategory", "/webjars/**", "/resources/**", "/api/products/savePromotion").permitAll();
-            auth.requestMatchers(HttpMethod.POST, "/api/users/categories/**", "/api/users/products/**", "/api/products/savePromotion", "/api/users/listUser", "/api/users/promotions/**", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
-            auth.requestMatchers(HttpMethod.PUT, "/api/users/categories/**", "/api/products/savePromotion","/api/users/updateUser/**", "/api/users/products/**", "/api/users/index", "/api/users/promotions/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
-            auth.requestMatchers(HttpMethod.GET, "/api/users/formUser/**", "/api/users/listUser/**", "/api/products/savePromotion", "/api/users/updateUser/**", "/swagger-ui.html").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers("/api/products/catalogue", "/api/products/products", "/api/products/listProducts", "/webjars/**", "/jscript/**", "/assets/**", "/css/**").permitAll();
+            auth.requestMatchers("/api/products/savePromotion", "/api/products/editProduct/**", "/api/products/deleteProduct/**", "/api/products/updateProduct/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+            auth.requestMatchers("/api/users/updateUser/**", ":api/users/**", "/api/users/index", "/swagger-ui.html", "/api/users/listUser", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
             auth.anyRequest().authenticated();
 
-        }).formLogin(Customizer.withDefaults())
-                .logout(logout-> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
+    }).formLogin(formLoginConfigurer -> formLoginConfigurer
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/api/products/products", true)
                 )
-                .build();
+      .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+      ).build();
     }
 
     @Bean
@@ -68,9 +66,5 @@ public class SecurityConfig {
                 .passwordEncoder(bCryptPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
-
-
-
-
 
 }
