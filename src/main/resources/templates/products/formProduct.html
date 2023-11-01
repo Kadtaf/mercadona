@@ -16,7 +16,7 @@
                         <div class="card-header">Création d'un nouveau produit</div>
                         <div class="card-body">
                             <div class="p-3">
-                                <form th:method="post" th:action="@{saveProduct}" enctype="multipart/form-data">
+                                <form th:method="post" th:action="@{saveProduct}" th:object="${product}" enctype="multipart/form-data">
                                     <div class="mb-3">
                                         <label for="userId">ID:</label>
                                         <input type="text" id="userId" name="userId" th:value="${userId}">
@@ -27,17 +27,24 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="label" class="form-label">Label</label>
-                                        <input type="text" class="form-control" id="label" name="label" th:field="${product.label}" required>
-
+                                        <input type="text" class="form-control" id="label" name="label" th:field="*{label}" required>
+                                        <div th:if="${#fields.hasErrors('label')}" class="alert alert-danger">
+                                            <p th:errors="*{label}">Erreur de label</p>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="description" class="form-label">Description</label>
-                                        <textarea class="form-control" id="description" name="description" th:field="${product.description}" rows="3" required></textarea>
-
+                                        <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="3" required></textarea>
+                                        <div  th:if="${#fields.hasErrors('description')}" class="alert alert-danger">
+                                            <p th:errors="*{description}">Erreur de description</p>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="prix" class="form-label">Prix</label>
-                                        <input type="text" class="form-control" id="prix" name="prix" th:field="${product.prix}" required>
+                                        <label for="prix" class="form-label">Prix €</label>
+                                        <input type="text" class="form-control" id="prix" name="prix" th:field="*{prix}" required>
+                                        <div th:if="${#fields.hasErrors('prix')}" class="alert alert-danger">
+                                            <p th:errors="*{prix}">Erreur de prix</p>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="category" class="form-label">Catégorie</label>

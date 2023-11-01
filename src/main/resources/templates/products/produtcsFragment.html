@@ -10,9 +10,9 @@
                     <p class="card-text" th:text="${product.description}"></p>
                     <div th:if="${product.promotion != null}" class="card-text">
                         <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
-                        <p class="card-text">[[${product.promotion.discountPercentage}]] %</p>
-                        <span class="card-text">De : [[${product.promotion.startDate}]]</span>
-                        <span class="card-text">Au : [[${product.promotion.endDate}]]</span>
+                        <p class="card-text">Promotion :[[${product.promotion.discountPercentage}]] %</p>
+                        <p class="card-text">De : [[${product.promotion.startDate}]]</p>
+                        <p class="card-text">Au : [[${product.promotion.endDate}]]</p>
                         <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
                     </div>
                     <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>

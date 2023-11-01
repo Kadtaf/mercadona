@@ -36,8 +36,8 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="prix" class="form-label">Prix</label>
-                                <input type="number" th:step=".01" class="form-control" id="prix" name="prix" required th:value="${product.getPrix()}" th:field="*{prix}" >
+                                <label for="prix" class="form-label">Prix €</label>
+                                <input type="text" class="form-control" id="prix" name="prix" required th:value="${product.getPrix()}" th:field="*{prix}" >
                                 <div th:if="${#fields.hasErrors('prix')}" class="alert alert-danger">
                                     <p th:errors="*{prix}">Erreur de prix</p>
                                 </div>

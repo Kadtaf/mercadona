@@ -97,7 +97,7 @@ public class ProductController {
         try {
             List<Product> products = productService.getAllProducts();
             model.addAttribute("products", products);
-            return "/products/catalogue";
+            return "/products/listProducts";
         } catch (Exception e) {
             String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
             throw new RuntimeException(errorMessage, e);
@@ -110,7 +110,7 @@ public class ProductController {
         Product product = productService.getProductById(id);
         if (product != null) {
             model.addAttribute("product", product);
-            return "/products/catalogue"; // Thymeleaf template name
+            return "/products/listProducts"; // Thymeleaf template name
         } else {
             throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
         }
@@ -149,11 +149,11 @@ public class ProductController {
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) {
-        model.addAttribute("product", new Product());
+        //model.addAttribute("product", new Product());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
-            return "redirect:../saveProduct";
+            return "products/formProduct";
         }
 
         User user = userService.getUserById(user_id);
@@ -170,7 +170,7 @@ public class ProductController {
             productService.createProduct(product);
 
             // Utilisez la redirection pour éviter les problèmes de re-soumission du formulaire
-            return "redirect:listProducts";
+            return "redirect:products";
         } catch (Exception e) {
             // Gestion des erreurs spécifiques à la création du produit
             logger.error("Une erreur s'est produite lors de la création du produit." + e.getMessage());
@@ -220,12 +220,8 @@ public class ProductController {
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) throws EntityNotFoundException {
-        System.out.println("--------------------------------------------\n");
-        System.out.println(bindingResult.hasErrors());
-        System.out.println("--------------------------------------------\n");
+
         if (bindingResult.hasErrors()) {
-            System.out.println("-----------------toto---------------------------\n");
-            //model.addAttribute("errors", bindingResult.getAllErrors());
             //model.addAttribute("errors", bindingResult.getAllErrors());
             return "products/editProduct";
         }
