@@ -17,14 +17,12 @@ function savePromotion() {
     let discountPercentage = $('#discountPercentageModal').val();
     let productId = $('#productIdModal').val();
     let productPrice = $('#priceModal').val();
-    console.log(startDate);
-    console.log(endDate);
-    console.log(discountPercentage);
-    console.log(productId);
-    console.log(productPrice);
     let form = document.getElementById('promotionForm');
     let datas = new FormData(form);
-    console.log(datas);
+
+
+
+
     /*for (var [key, value] of data) {
 
         console.log(key, value)
@@ -39,6 +37,7 @@ function savePromotion() {
     $('#promotionForm')[0].reset();
     $('#addPromotionModal').hide();
     $('.modal-backdrop').remove();
+    $('body').css("overflow", "unset");
 
     let token = $("meta[name='_csrf']").attr("content");
     console.log(token);
@@ -56,9 +55,7 @@ function savePromotion() {
         });
 
     request.done(function (response) {
-        //Code à jouer en cas d'éxécution sans erreur du script du PHP
-        console.log(response);
-        //alert("Ok");
+        alert("Votre promotion a été ajouté");
         $('#promotionId-' + productId).text(response.promotion.startDate + ' ' + response.promotion.endDate + ': ' + response.promotion.discountPercentage + '%');
         $('#priceId-' + productId).text('Prix : ' + response.prix);
     });
@@ -72,7 +69,7 @@ function savePromotion() {
     });
 
     request.always(function () {
-       getProductsByCategory(0);
+       getProductsByCategory(globalCategory, globalPage);
     });
 }
 

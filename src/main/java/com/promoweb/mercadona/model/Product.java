@@ -14,11 +14,11 @@ public class Product {
     private  Long id;
 
     @NotBlank(message = "Le champ label ne peut pas être vide")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!?]+$", message = "Le label doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?]+$", message = "Le label doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
     public String label;
 
     @NotBlank(message = "Le champ description ne peut pas être vide")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!?]+$", message = "Le texte doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?]+$", message = "Le texte doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
     private String description;
 
     @NotNull(message = "Le champ prix ne peut pas être nul")

@@ -1,3 +1,12 @@
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    let globalCategory = [[${category}]];
+    let globalPage = [[${currentPage}]];
+    console.log(globalCategory + ' ' + globalPage);
+
+    /*]]>*/
+</script>
 <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
   <strong th:text="${errorMessage}"></strong>
 </div>
