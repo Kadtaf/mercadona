@@ -86,31 +86,28 @@ public class UserController {
 
     //Update
     @GetMapping( "/editUser/{id}")
-    public String editUser(@PathVariable Long id, @ModelAttribute("user") User user, Model model) {
+    public String editUser(@PathVariable Long id, @ModelAttribute("user") User user, Model model) throws EntityNotFoundException {
         User newuser = userService.getUserById(id);
         if (newuser != null) {
-            // On peut ajouter des attributs au modèle si nécessaire
-
             model.addAttribute("user", newuser);
 
         } else {
             throw new EntityNotFoundException("L'administrateur avec l'id : " + id + " n'existe pas");
         }
-        //userService.updateUser(user.getId(), user);
-        // Redirige vers la page contenant la liste de tous les utilisateurs
+
         return "/users/editUser";
     }
 
     @PostMapping("/updateUser/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute @Valid User user,
+                             BindingResult bindingResult,
+                             Model model) {
         if (bindingResult.hasErrors()) {
-            return "redirect:/editUser" + user.getId();
+            return "/users/editUser" ;
         }
-
-        userService.updateUser(id, user);
-
-        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
         model.addAttribute("user", user);
+        userService.updateUser(id, user);
         return "redirect:../index";
     }
 

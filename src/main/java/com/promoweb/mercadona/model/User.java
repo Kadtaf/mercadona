@@ -3,6 +3,7 @@ package com.promoweb.mercadona.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,11 +23,16 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le prénom ne peut pas être vide")
     private String firstname;
+
+    @NotBlank(message = "Le nom ne peut pas être vide")
     private String lastname;
 
-    @Email
+    @Email(message = "L'adresse e-mail doit être valide")
+
     private String email;
+    @NotBlank(message = "Le nom d'utilisateur ne peut pas être vide")
     private String username;
 
     private String password;

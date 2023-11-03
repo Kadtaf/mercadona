@@ -7,7 +7,7 @@ CREATE DATABASE mercadona_DB
     LC_CTYPE = 'fr_FR.UTF-8';
 
 
--- Création de la table Admin
+-- Création de la table users
 CREATE TABLE users (
                        id SERIAL PRIMARY KEY,
                        lastname VARCHAR(50) NOT NULL,
@@ -18,13 +18,21 @@ CREATE TABLE users (
                        password VARCHAR(255) NOT NULL
 );
 
--- Création de la table Category
+-- Création de la table categories
 CREATE TABLE categories (
                           id SERIAL PRIMARY KEY,
                           label VARCHAR(255) NOT NULL
 );
 
--- Création de la table Product
+-- Création de la table promotions
+CREATE TABLE promotions (
+                            id SERIAL PRIMARY KEY,
+                            start_date DATE NOT NULL,
+                            end_date DATE NOT NULL,
+                            discount_percentage DECIMAL(5,2) DEFAULT NULL
+);
+
+-- Création de la table products
 CREATE TABLE products (
                          id SERIAL PRIMARY KEY,
                          label VARCHAR(255) NOT NULL,
@@ -40,11 +48,5 @@ CREATE TABLE products (
 
 );
 
--- Création de la table Promotion
-CREATE TABLE promotions (
-                           id SERIAL PRIMARY KEY,
-                           start_date DATE NOT NULL,
-                           end_date DATE NOT NULL,
-                           discount_percentage DECIMAL(5,2) DEFAULT NULL
-);
+
 
