@@ -1,8 +1,8 @@
-22:32:57.505 [http-nio-8080-exec-1] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+22:33:17.485 [http-nio-8080-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
 jakarta.validation.ConstraintViolationException: Validation failed for classes [com.promoweb.mercadona.model.User] during update time for groups [jakarta.validation.groups.Default, ]
 List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='Le mot de passe doit avoir entre 8 et 12 caractères', propertyPath=password, rootBeanClass=class com.promoweb.mercadona.model.User, messageTemplate='Le mot de passe doit avoir entre 8 et 12 caractères'}
 	ConstraintViolationImpl{interpolatedMessage='Le mot de passe doit contenir au moins une lettre et un chiffre', propertyPath=password, rootBeanClass=class com.promoweb.mercadona.model.User, messageTemplate='Le mot de passe doit contenir au moins une lettre et un chiffre'}
+	ConstraintViolationImpl{interpolatedMessage='Le mot de passe doit avoir entre 8 et 12 caractères', propertyPath=password, rootBeanClass=class com.promoweb.mercadona.model.User, messageTemplate='Le mot de passe doit avoir entre 8 et 12 caractères'}
 ]
 	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:151)
 	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreUpdate(BeanValidationEventListener.java:92)

@@ -1,4 +1,4 @@
-22:33:17.485 [http-nio-8080-exec-2] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+22:37:19.730 [http-nio-8080-exec-3] ERROR o.a.c.c.C.[.[.[.[dispatcherServlet] - Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
 jakarta.validation.ConstraintViolationException: Validation failed for classes [com.promoweb.mercadona.model.User] during update time for groups [jakarta.validation.groups.Default, ]
 List of constraint violations:[
 	ConstraintViolationImpl{interpolatedMessage='Le mot de passe doit contenir au moins une lettre et un chiffre', propertyPath=password, rootBeanClass=class com.promoweb.mercadona.model.User, messageTemplate='Le mot de passe doit contenir au moins une lettre et un chiffre'}
@@ -35,9 +35,9 @@ List of constraint violations:[
 	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:244)
-	at jdk.proxy35/jdk.proxy35.$Proxy382.save(Unknown Source)
+	at jdk.proxy37/jdk.proxy37.$Proxy396.save(Unknown Source)
 	at com.promoweb.mercadona.service.UserService.updateUser(UserService.java:58)
-	at com.promoweb.mercadona.controller.UserController.updateUser(UserController.java:113)
+	at com.promoweb.mercadona.controller.UserController.updateUser(UserController.java:110)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

@@ -1,5 +1,5 @@
 --Création de la base de données
-CREATE DATABASE mercadona_DB
+CREATE DATABASE mercadona
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'

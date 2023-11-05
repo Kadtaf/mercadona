@@ -222,7 +222,6 @@ public class ProductController {
                                 Model model) throws EntityNotFoundException {
 
         if (bindingResult.hasErrors()) {
-            //model.addAttribute("errors", bindingResult.getAllErrors());
             return "products/editProduct";
         }
 
