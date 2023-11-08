@@ -50,7 +50,7 @@
                                     <option th:each="category : ${categories}"
                                             th:value="${category.getId()}"
                                             th:text="${category.getLabel()}"
-                                            th:selected="${category.id == product.category.id}"></option>
+                                            th:selected="${category.getId() == product.category.getId()}"></option>
                                 </select>
                             </div>
                             <!-- Champ pour Ajouter une Nouvelle Catégorie -->
@@ -58,8 +58,8 @@
                                 <label for="newCategoryLabel" class="form-label">Nouvelle Catégorie</label>
                                 <input type="text" class="form-control" id="newCategoryLabel" name="newCategoryLabel">
                             </div>-->
-                            <input type="hidden" name="_method" value="PUT" />
-                            <input type="hidden" name="id" th:value="${product.id}" />
+
+                            <input type="text" class="form-control" name="id" th:value="${product.getId()}"/>
                             <button type="submit" class="btn btn-dark">Enregistrer</button>
                         </form>
                     </div>

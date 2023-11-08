@@ -44,11 +44,14 @@ public class Category {
         this.label = label;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
                 "label='" + label + '\'' +
-                ", products=" + products +
                 '}';
     }
 

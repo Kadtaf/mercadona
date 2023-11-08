@@ -33,6 +33,7 @@ public class SecurityConfig {
             auth.anyRequest().authenticated();
 
     }).formLogin(formLoginConfigurer -> formLoginConfigurer
+                        .loginPage("/login").permitAll()
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/api/products/products", true)
                 )

@@ -29,8 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -92,17 +91,6 @@ public class ProductController {
         return "redirect:/listProducts";
     }
 
-    @GetMapping("/allProducts")
-    public String getAllProducts(Model model) {
-        try {
-            List<Product> products = productService.getAllProducts();
-            model.addAttribute("products", products);
-            return "/products/listProducts";
-        } catch (Exception e) {
-            String errorMessage = "Erreur lors de la récupération des produits: " + e.getMessage();
-            throw new RuntimeException(errorMessage, e);
-        }
-    }
 
     //Read
     @GetMapping("/{id}")
@@ -185,7 +173,7 @@ public class ProductController {
     public String showUpdateForm(@PathVariable Long id, Model model) {
 
         try {
-           Product product = productService.getProductById(id);
+            Product product = productService.getProductById(id);
             if (product != null) {
                 model.addAttribute("product", product);
 
@@ -215,6 +203,7 @@ public class ProductController {
     @PostMapping("/updateProduct/{id}")
     public String updateProduct(@PathVariable Long id,
                                 @ModelAttribute @Valid Product product,
+                                @ModelAttribute Category category,
                                 BindingResult bindingResult,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
@@ -222,6 +211,7 @@ public class ProductController {
                                 Model model) throws EntityNotFoundException {
 
         if (bindingResult.hasErrors()) {
+
             return "products/editProduct";
         }
 
@@ -318,23 +308,6 @@ public class ProductController {
         productService.updateProduct(productId, product);
 
         return product;
-    }
-
-    @GetMapping("/byUser/{user_id}")
-    public ResponseEntity<List<Product>> getProductsByAdmin(@PathVariable Long user_id) {
-        try {
-            List<Product> productsByUser = productService.getProductsByUser(user_id);
-            return ResponseEntity.ok(productsByUser);
-        } catch (NoProductsFoundException e) {
-
-            logger.warn("Exception lors de la récupération des produits par admin: {}", e.getMessage());
-            throw new EntityNotFoundException("L'administrateur avec l'id : " + user_id + " n'existe pas");
-            //return ResponseEntity.notFound().build();
-
-        } catch (Exception e) {
-            logger.error("Une erreur s'est produite lors de la récupération des produits par l'administrateur.", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
 }

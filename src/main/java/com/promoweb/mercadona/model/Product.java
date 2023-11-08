@@ -61,6 +61,10 @@ public class Product {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public User getUser() {
         return user;
     }
@@ -130,6 +134,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
+                "id='" + id + '\'' +
                 "label='" + label + '\'' +
                 ", description='" + description + '\'' +
                 ", prix=" + prix +
