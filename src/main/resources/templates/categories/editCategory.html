@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis à jour de la catégorie </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row my-5">
+        <div class="col-md-6 offset-3">
+            <div class="card">
+                <div class="card-header">Mis à jour de la catégorie</div>
+                <div class="card-body">
+                    <div class="p-3">
+                        <form th:method="post" th:action="@{../editCategory/{id}(id=${category.id})}" th:object="${category}">
+                            <div class="mb-3 mt-3">
+                                <label for="label" class="form-label">Label:</label>
+                                <input type="text" class="form-control" id="label" placeholder="Nom" name="label" th:value="${category.label}" th:field="*{label}">
+                                <div th:if="${#fields.hasErrors('label')}" class="alert alert-danger">
+                                    <p th:errors="*{label}">Erreur de label</p>
+                                </div>
+                            </div>
+                            <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}"/>
+                            <input type="hidden" name="id" th:value="${category.id}" />
+                            <button class="btn btn-success">Mettre à jour</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -37,9 +37,9 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public Product createProduct(Product product) {
+    public void createProduct(Product product) {
             //isValidProduct(product);
-            return productRepository.save(product);
+           productRepository.save(product);
     }
 
     public void updateProduct(Long id, Product product) {
@@ -53,6 +53,7 @@ public class ProductService {
             existingProduct.setCategory(product.getCategory());
             existingProduct.setPromotion(product.getPromotion());
              productRepository.save(existingProduct);
+
         }
     }
 
@@ -137,6 +138,7 @@ public class ProductService {
     }
 
     public String uploadImage(MultipartFile imageFile) throws IOException {
+        String fileName = "";
         // Vérifiez si un fichier a été fourni
         if (imageFile != null && !imageFile.isEmpty()) {
             // Obtenez le chemin du répertoire où vous souhaitez stocker les images
@@ -150,7 +152,7 @@ public class ProductService {
             }
 
             // Générez un nom de fichier unique pour éviter les conflits
-            String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
+             fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
 
             // Construisez le chemin complet du fichier
             String filePath = uploadDir + File.separator + fileName;
@@ -159,11 +161,9 @@ public class ProductService {
             FileCopyUtils.copy(imageFile.getBytes(), new File(filePath));
 
             // Retournez le chemin du fichier enregistré
-            return fileName;
-        }
 
-        // Si aucun fichier n'est fourni, retournez une chaîne vide ou null
-        return "";
+        }
+        return fileName;
     }
 
 }

@@ -1,3 +1,7 @@
 .has-promotion {
     font-weight: bold;
 }
+
+.custom-checkbox {
+    transform: scale(1.5);
+}

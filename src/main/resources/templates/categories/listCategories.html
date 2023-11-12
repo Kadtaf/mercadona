@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Gatégories </title>
+    <link th:href="@{/css/promo.css}" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="p-3" sec:authorize="isAuthenticated()">
+        <div class="card">
+            <div th:if="${error}" class="alert alert-danger p-3" th:name="error">
+                <p th:text="${error}"/>
+            </div>
+            <div th:if="${message}" class="alert alert-success p-3" th:name="message">
+                <p th:text="${message}"/>
+            </div>
+
+            <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                <h2>Liste des Catégories</h2>
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/api/categories/formCategory}" class="btn btn-dark">Nouvelle Catégorie</a>
+            </div>
+
+            <div class="card-body">
+                <!-- Formulaire de recherche -->
+                <form method="GET" th:action="@{index}">
+                    <label>Mot clé:</label>
+                    <input type="text" name="keyword" th:value="${keyword}">
+                    <button type="submit" class="btn btn-info">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <div th:if="${updatedCategory != null}">
+                    <p>Catégorie mis à jour avec succès :</p>
+                    <p>ID: <span th:text="${updatedCategory.id}"></span></p>
+                    <p>Nom du catégorie: <span th:text="${updatedCategory.label}"></span></p>
+                </div>
+                <!-- Tableau des utilisateurs -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Label</th>
+                        <th>Status</th>
+                        <th>Delete</th>
+                        <th class="text-center">Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Utilisation de th:each pour parcourir la liste d'utilisateurs -->
+                    <tr th:each="c:${categories}">
+                        <td th:text="${c.id}"></td>
+                        <td th:text="${c.label}"></td>
+                        <td>
+                            <input class="form-check-input custom-checkbox" type="checkbox" th:checked="${c.status}" id="flexCheckChecked" disabled>
+                        </td>
+
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+
+                            <a onclick="return confirm('Etes vous sure?')"
+                               th:href="@{delete/{id}(id=${c.id})
+                                   }" th:class="${c.getStatus()} ?'btn btn-success': 'btn btn-danger'">
+                                <i th:text ="${c.getStatus()} ? 'Désactiver' : 'Activer'"></i>
+                            </a>
+
+
+
+                        </td>
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
+                            <!-- Liens pour editer  un utilisateur -->
+                            <input type="hidden" name="categoryId" th:value="${c.id}" />
+                            <a class="btn btn-success ml-4" th:href="@{editCategory/{id}(id=${c.id})}">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a
+                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                                th:href="@{index(page=${status.index}, keyword=${keyword})}"
+                                th:text="${status.index + 1}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

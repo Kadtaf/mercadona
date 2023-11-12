@@ -5,6 +5,8 @@ import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.service.UserService;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,10 +16,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 @Controller
 @RequestMapping("/api/users")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final UserService userService;
     @Autowired
     public UserController(UserService userService){
@@ -47,7 +52,7 @@ public class UserController {
 
     //Read
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable Long id, Model model) {
+    public String getUserById(@PathVariable Long id, Model model) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         if (user != null) {
             model.addAttribute("user", user);
@@ -67,12 +72,23 @@ public class UserController {
     }
 
     @PostMapping("/saveUser")
-    public String createUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) return "/users/formUser";
+    public String createUser(@Valid @ModelAttribute("user") User user,
+                             BindingResult bindingResult,
+                             RedirectAttributes attributes,
+                             Model model) {
+        if (bindingResult.hasErrors()) {
+            return "/users/formUser";
+        }
+        try {
+            userService.createUser(user);
+            attributes.addFlashAttribute("message", "L'utilisateur a été créé avec succès");
 
-        User createUser = userService.createUser(user);
-        //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
-        model.addAttribute("createdUser", createUser);
+            return "redirect:index";
+
+        } catch (Exception e) {
+            logger.warn("Problème est survenu lors de la création de l'utilisateur : {} ", e.getMessage());
+            attributes.addFlashAttribute("error", "L'ajout d'un nouveau utilisateur a échoué");
+        }
         return "redirect:index";
     }
 
@@ -102,29 +118,44 @@ public class UserController {
     public String updateUser(@PathVariable Long id,
                              @ModelAttribute @Valid User user,
                              BindingResult bindingResult,
+                             RedirectAttributes attributes,
                              Model model) {
         if (bindingResult.hasErrors()) {
             return "/users/editUser" ;
         }
-        model.addAttribute("user", user);
-        userService.updateUser(id, user);
+        try {
+
+            model.addAttribute("user", user);
+            userService.updateUser(id, user);
+            attributes.addFlashAttribute("message", "Mis à jour de l'administrateur' avec succès");
+
+            return "redirect:../index";
+
+        } catch (Exception e) {
+            logger.warn("Problème est survenu lors de la mise à jour de l'administrateur : {} ", e.getMessage());
+            attributes.addFlashAttribute("error", "Problème est survenu lors de la mise à jour de l'administrateur");
+        }
+        logger.info("Redirection vers /index");
         return "redirect:../index";
+
     }
-
-
 
     //Delete
     @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable Long id, Model model) {
-
-        userService.deleteUser(id);
-
-        // On peut ajouter des attributs au modèle si nécessaire
-        model.addAttribute("message", "L'utilisateur a été supprimé avec succès.");
-
-        // Redirige vers la page contenant la liste de tous les utilisateurs
+    public String deleteUser(@PathVariable Long id,
+                             RedirectAttributes attributes) {
+        try {
+            userService.deleteUser(id);
+            attributes.addFlashAttribute("message", "L'utilisateur a été supprimé avec succès");
+            return "redirect:../index";
+        } catch (Exception e) {
+            logger.warn("Problème est survenu lors de la suppression de l'utilisateur : {} ", e.getMessage());
+            attributes.addFlashAttribute("error", "Problème est survenu lors de la suppression de l'utilisateur");
+        }
         return "redirect:../index";
     }
+
+
 
 
 }

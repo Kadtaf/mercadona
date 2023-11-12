@@ -46,7 +46,8 @@ public class Product {
                    double prix,
                    String imagePath,
                    Category category,
-                   Promotion promotion
+                   Promotion promotion,
+                   User user
     ) {
         this.label = label;
         this.description = description;
@@ -54,6 +55,7 @@ public class Product {
         this.imagePath = imagePath;
         this.category = category;
         this.promotion = promotion;
+        this.user = user;
 
     }
 

@@ -2,13 +2,18 @@ package com.promoweb.mercadona.model;
 
 
 import jakarta.persistence.*;
+import org.hibernate.Session;
+import org.springframework.data.jpa.provider.HibernateUtils;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,16 +21,19 @@ public class Category {
 
     private String label;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    @Column(name ="status")
+    private Boolean status;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
+    private List<Product> products = new ArrayList<>();
 
     public Category() {
     }
 
-    public Category(Long id, String label) {
-
-        this.label = label;
+    public Category(Long id, String label, Boolean status) {
         this.id =id;
+        this.label = label;
+        this.status = status;
     }
 
     public Long getId() {
@@ -48,10 +56,19 @@ public class Category {
         return products;
     }
 
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
                 "label='" + label + '\'' +
+                "products='" + products + '\'' +
                 '}';
     }
 

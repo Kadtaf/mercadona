@@ -46,12 +46,18 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String password, String role, List<Product> products) {
+    public User(Long id, String username, String password, String role) {
         this.id =id;
         this.username = username;
         this.password = password;
         this.role= role;
-        this.products= products;
+
+    }
+
+    public User(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -138,5 +144,9 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", products=" + products +
                 '}';
+    }
+
+    public void setId(Long userId) {
+        this.id=id;
     }
 }

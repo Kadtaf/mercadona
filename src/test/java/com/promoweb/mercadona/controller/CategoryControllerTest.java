@@ -1,61 +1,59 @@
 package com.promoweb.mercadona.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.promoweb.mercadona.MercadonaApplication;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.service.CategoryService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MercadonaApplication.class)
-@AutoConfigureMockMvc
-public class CategoryControllerTest {
+@ExtendWith(MockitoExtension.class)
+class CategoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
+    @Mock
     private CategoryService categoryService;
 
+    @InjectMocks
+    private CategoryController categoryController;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Test
-    @WithMockUser(roles = "ADMIN")
-    public void testUpdateCategory() throws Exception {
+    void testUpdateCategory() throws Exception {
+        // Setup MockMvc
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
 
+        // Create a sample category for testing
         Long categoryId = 1L;
+        Category category = new Category();
+        category.setId(categoryId);
+        // Set other properties...
 
-        //Création d'un objet Category simulé à envoyer dans la requête PUT.
-        Category updatedCategory = new Category(categoryId, "UpdatedCategory");
+        // Mock categoryService.updateCategory to do nothing
+        doNothing().when(categoryService).updateCategory(category);
 
-        //Simulation de la mise à jour de la categorie en utilisant le service categoryService.
-        when(categoryService.updateCategory(eq(categoryId), any(Category.class))).thenReturn(updatedCategory);
+        // Perform the request
+        ResultActions resultActions = mockMvc.perform(post("/api/categories/editCategory/{id}", categoryId)
+                .flashAttr("category", category));
 
-        mockMvc.perform(put("/api/categories/{id}", categoryId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedCategory)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.label").value("UpdatedCategory"));
+        // Validate the response
+        resultActions
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("../index"))
+                .andExpect(flash().attribute("message", "Mis à jour de la catégorie avec succès"));
 
-        //Vérification que le service a été appelé avec la categorie simulé.
-        verify(categoryService, times(1)).updateCategory(eq(categoryId), any(Category.class));
-
+        // Verify that the updateCategory method was called
+        verify(categoryService, times(1)).updateCategory(category);
     }
+
+    // Add more tests for other controller methods as needed...
 }

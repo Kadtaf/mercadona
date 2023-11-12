@@ -40,7 +40,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void updateUser(Long id, User user) {
+    public void updateUser(Long id, User user) throws EntityNotFoundException {
         User existingUser = getUserById(id);
         if (existingUser != null) {
             // Validation de traitement avant d'enregistrer dans la base de données

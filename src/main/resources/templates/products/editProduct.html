@@ -16,7 +16,7 @@
                 <div class="card-header">Mise à jour d' produit</div>
                 <div class="card-body">
                     <div class="p-3">
-                        <form th:method="post" th:action="@{../updateProduct/{id}(id=${product.getId()})}" th:object="${product}" enctype="multipart/form-data">
+                        <form th:method="post" th:action="@{../editProduct/{id}(id=${product.getId()})}" th:object="${product}" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="imageFile" class="form-label">Image du Produit</label>
                                 <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required th:value="${product.getImagePath()}">
@@ -50,7 +50,9 @@
                                     <option th:each="category : ${categories}"
                                             th:value="${category.getId()}"
                                             th:text="${category.getLabel()}"
-                                            th:selected="${category.getId() == product.category.getId()}"></option>
+                                            th:selected="${category.getId() == product.category.getId()}">
+
+                                    </option>
                                 </select>
                             </div>
                             <!-- Champ pour Ajouter une Nouvelle Catégorie -->

@@ -72,6 +72,8 @@ function savePromotion() {
        getProductsByCategory(globalCategory, globalPage);
     });
 }
+let xhr = new XMLHttpRequest();
+xhr.open('GET', '/api/categories/allCategories', true);
 
 function getProductsByCategory(category, page=0) {
     console.log('Category: ' + category + ', Page: ' + page);
@@ -87,6 +89,8 @@ function getProductsByCategory(category, page=0) {
          }
      });
  }
+
+
 
 
 

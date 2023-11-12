@@ -29,8 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -132,6 +134,7 @@ public class ProductController {
     @PostMapping("/saveProduct")
     public String createProduct(@ModelAttribute @Valid Product product,
                                 BindingResult bindingResult,
+                                RedirectAttributes attributes,
                                 @RequestParam(name = "userId", required = true) Long user_id,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
@@ -156,16 +159,17 @@ public class ProductController {
             }
 
             productService.createProduct(product);
-
+            attributes.addFlashAttribute("message", "Produit ajouté avec succés");
             // Utilisez la redirection pour éviter les problèmes de re-soumission du formulaire
             return "redirect:products";
         } catch (Exception e) {
             // Gestion des erreurs spécifiques à la création du produit
             logger.error("Une erreur s'est produite lors de la création du produit." + e.getMessage());
-            System.out.println(e.getMessage());
-            model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
-            return "errors/error";
+            attributes.addFlashAttribute("message", "Une erreur s'est produite lors de la création du produit.");
+           // model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
+
         }
+        return "redirect:products";
     }
 
     //Update
@@ -199,18 +203,21 @@ public class ProductController {
             return "/errors/error";
         }
     }
-
-    @PostMapping("/updateProduct/{id}")
+    @PostMapping("/editProduct/{id}")
     public String updateProduct(@PathVariable Long id,
                                 @ModelAttribute @Valid Product product,
-                                @ModelAttribute Category category,
                                 BindingResult bindingResult,
+                                RedirectAttributes attributes,
                                 @RequestParam(name = "existingCategoryId", required = false) Long category_id,
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) throws EntityNotFoundException {
 
         if (bindingResult.hasErrors()) {
+            List<Category> categories = categoryService.getAllCategories();
+            model.addAttribute("categories", categories);
+            Category category = categoryService.getCategoryById(category_id);
+            product.setCategory(category);
 
             return "products/editProduct";
         }
@@ -219,10 +226,16 @@ public class ProductController {
             createCategoryByNewProduct(product, category_id, newCategoryLabel);
             product.setImagePath(productService.uploadImage(imageFile));
             productService.updateProduct(id, product);
-
+            attributes.addFlashAttribute("message", "Le Produit a été modifié avec succés");
             return "redirect:../products";
 
-        } catch (EntityNotFoundException e) {
+        } catch (IOException e) {
+            logger.warn("Problème lors du chargement du fichier: {} ", e.getMessage());
+            model.addAttribute("error", "Problème lors du chargement du l'image");
+            return "errors/error";
+        }
+        catch (EntityNotFoundException e) {
+
             logger.warn("Produit non trouvé lors de la mise à jour: {}", e.getMessage());
             model.addAttribute("error", "Produit non trouvé lors de la mise à jour.");
             return "errors/error";
@@ -230,11 +243,15 @@ public class ProductController {
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de la mise à jour du produit.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de la mise à jour du produit.");
-            return "errors/error";
+            // model.addAttribute("error", "Une erreur s'est produite lors de la mise à jour du produit.");
+
         }
+        return "redirect:../products";
     }
 
-    public void createCategoryByNewProduct(@ModelAttribute Product product, @RequestParam(name = "existingCategoryId", required = false) Long category_id, @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel) {
+    public void createCategoryByNewProduct(@ModelAttribute Product product,
+                                           @RequestParam(name = "existingCategoryId", required = false) Long category_id,
+                                           @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel) {
         if (category_id != null) {
             Category existingCategory = categoryService.getCategoryById(category_id);
              product.setCategory(existingCategory);
@@ -245,6 +262,8 @@ public class ProductController {
                 newCategory.setLabel(newCategoryLabel);
                 categoryService.saveCategory(newCategory);
                 product.setCategory(newCategory);
+
+
             }
         }
 
@@ -253,12 +272,12 @@ public class ProductController {
 
     //Delete
     @GetMapping("/deleteProduct/{id}")
-    public String deleteProduct(@PathVariable Long id, Product product,  Model model) {
+    public String deleteProduct(@PathVariable Long id, Product product, RedirectAttributes attributes, Model model) {
 
         try {
             System.out.println(product);
             productService.deleteProduct(id);
-
+            attributes.addFlashAttribute("message", "Le produit a été supprimé avec succés");
             return "redirect:../products";
 
         } catch (EntityNotFoundException e) {
@@ -272,9 +291,10 @@ public class ProductController {
 
             // Gestion générale des erreurs
             logger.error("Une erreur s'est produite lors de la suppression du produit.", e);
-            model.addAttribute("error", "Une erreur s'est produite lors de la suppression du produit.");
-            return "errors/error";
+            attributes.addFlashAttribute("message", "Une erreur s'est produite lors de la suppression du produit.");
+            //model.addAttribute("error", "Une erreur s'est produite lors de la suppression du produit.");
         }
+        return "redirect:../products";
     }
 
     @GetMapping("/promotions")

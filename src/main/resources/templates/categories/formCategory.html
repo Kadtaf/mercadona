@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template.html">
+<head>
+    <meta charset="UTF-8">
+    <title> Création d'une catégories </title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <div class="col-md-4 offset-3">
+            <div class="card my-4">
+                <div class="card-header">Création d'une gatégorie</div>
+                <div class="card-body">
+                    <div class="p-1">
+                        <form method="post" th:action="@{formCategory}">
+                            <div class="mb-3 mt-3">
+                                <label for="label" class="form-label">Nom:</label>
+                                <input type="text" class="form-control" id="label" placeholder="Nom" name="label">
+                            </div>
+                            <button type="submit" class="btn btn-dark">Enregistrez</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
