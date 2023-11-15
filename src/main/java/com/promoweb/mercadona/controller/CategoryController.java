@@ -2,8 +2,6 @@ package com.promoweb.mercadona.controller;
 
 
 import com.promoweb.mercadona.model.Category;
-import com.promoweb.mercadona.model.Product;
-import com.promoweb.mercadona.model.User;
 import com.promoweb.mercadona.service.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -11,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +39,7 @@ public class CategoryController {
                         @RequestParam(name = "size", defaultValue = "4") int size,
                         @RequestParam(name = "keyword", defaultValue = "") String kw) {
         // Utilisez votre méthode de recherche utilisateur avec pagination
-        Page<Category> pageCategories = categoryService.findCategoriesWithPagination(kw, PageRequest.of(page, size));
+        Page<Category> pageCategories = categoryService.findCategoriesWithPagination(kw, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
 
         model.addAttribute("categories", pageCategories.getContent());
         model.addAttribute("pages", new int[pageCategories.getTotalPages()]);
@@ -52,7 +50,7 @@ public class CategoryController {
     }
     //Read
     @GetMapping("/editCategory/{id}")
-    public String getCategoryById(@PathVariable Long id, Model model) {
+    public String getCategoryById(@PathVariable Long id, Model model) throws EntityNotFoundException {
         Category category = categoryService.getCategoryById(id);
         if (category != null) {
             model.addAttribute("category", category);
@@ -68,7 +66,6 @@ public class CategoryController {
                                  BindingResult bindingResult,
                                  RedirectAttributes attributes,
                                  Model model) {
-
 
         if (bindingResult.hasErrors()) {
             return "/categories/editCategory";
@@ -103,8 +100,6 @@ public class CategoryController {
         }
         try {
             categoryService.createCategory(category);
-            //Ajouter l'utilisateur créer au modèle pour l'affichage sur la page suivante
-            //model.addAttribute("createdCategory", createCategory);
             attributes.addFlashAttribute("message", "La catégories a été créé avec succès");
             return "redirect:index";
         } catch (Exception e) {
@@ -137,12 +132,9 @@ public class CategoryController {
 
             attributes.addFlashAttribute("error", "Problème est survenu lors de la désactivation  de la catégorie: " + e.getMessage());
         }
-
-
         return "redirect:../index";
     }
 
-    //Show categories
     @GetMapping("/allCategories")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();

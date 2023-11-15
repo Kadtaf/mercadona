@@ -1,17 +1,29 @@
+
 function showPromotionForm(productId, productPrice) {
-    console.log(productId);
+
     $('#productIdModal').val(productId)
-    console.log(productPrice);
-    console.log( $('#priceId-' + productId).text());
-    $('#priceModal').val(productPrice);
+
+    $('#priceModal').val(productPrice.toFixed(2));
 
     // $('#addPromotionModal').style.display = 'block';
 
 }
+
+
 //document.getElementById('addPromotionModal').addEventListener('submit', savePromotion());
 function savePromotion() {
-    console.log("tototo");
-    // Récupérer les valeurs du formulaire
+    let globalCategory;
+    let selectCategory = $('#selectCategory').val();
+
+    if(selectCategory === undefined || selectCategory === null || selectCategory === "") {
+        globalCategory = 0;
+    } else {
+        globalCategory = selectCategory;
+    }
+
+    let globalPage = $('input.btn-info').val() - 1;
+
+
     let startDate = $('#startDateModal').val();
     let endDate = $('#endDateModal').val();
     let discountPercentage = $('#discountPercentageModal').val();
@@ -21,26 +33,19 @@ function savePromotion() {
     let datas = new FormData(form);
 
 
+     let newPrice = productPrice * (1 - discountPercentage / 100);
+      $('#priceId-' + productId).text('Prix : ' + newPrice.toFixed(2));
 
 
-    /*for (var [key, value] of data) {
 
-        console.log(key, value)
-
-    }*/
-    // Effectuer le calcul du nouveau prix
-
-    /* let newPrice = productPrice * (1 - discountPercentage / 100);
-      console.log(newPrice);
-      console.log( document.getElementById('priceId-' + productId));
-      $('#priceId-' + productId).text('Prix : ' + newPrice);*/
     $('#promotionForm')[0].reset();
     $('#addPromotionModal').hide();
     $('.modal-backdrop').remove();
     $('body').css("overflow", "unset");
 
+
     let token = $("meta[name='_csrf']").attr("content");
-    console.log(token);
+
     let request =
         $.ajax({
             type: "POST",
@@ -55,42 +60,61 @@ function savePromotion() {
         });
 
     request.done(function (response) {
-        alert("Votre promotion a été ajouté");
-        $('#promotionId-' + productId).text(response.promotion.startDate + ' ' + response.promotion.endDate + ': ' + response.promotion.discountPercentage + '%');
-        $('#priceId-' + productId).text('Prix : ' + response.prix);
+
+        let selectorPromo = "#promotionId-" + response.id;
+        let selectorPrice = "#newPriceId-" + response.id;
+
+
+        $(selectorPromo).text(response.promotion.startDate + ' ' + response.promotion.endDate + ' ' + 'Promotion: ' + response.promotion.discountPercentage + '%');
+        $(selectorPrice).text('Prix : ' + response.prix.toFixed(2)+  " €");
+
+        const successAlert = $('<div>').addClass('alert alert-success alert-dismissible fade show').attr('role', 'alert')
+            .html('Votre promotion a été ajoutée avec succès' +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>');
+
+
+        $('#alerts-container').append(successAlert);
+
+
+        setTimeout(function () {
+            successAlert.alert('close');
+        }, 5000);
+
+
+        getProductsByCategory(globalCategory, globalPage);
+
+
     });
     request.fail(function (http_error) {
-        //Code à jouer en cas d'éxécution en erreur du script du PHP
 
         let server_msg = http_error.responseText;
         let code = http_error.status;
         let code_label = http_error.statusText;
         alert("Erreur "+code+" ("+code_label+") : "  + server_msg);
     });
-
+/*
     request.always(function () {
-       getProductsByCategory(globalCategory, globalPage);
+
+        getProductsByCategory(globalCategory, globalPage);
     });
+    */
+
 }
-let xhr = new XMLHttpRequest();
-xhr.open('GET', '/api/categories/allCategories', true);
 
 function getProductsByCategory(category, page=0) {
     console.log('Category: ' + category + ', Page: ' + page);
-     let XHR = new XMLHttpRequest();
-     XHR.open('get', '/api/products/listProducts?category='+ category + '&page=' + page );
-     XHR.send();
-     XHR.addEventListener('readystatechange', function() {
-         console.log('Category: ' + category + ', Page: ' + page);
-         console.log(XHR);
-         if (XHR.readyState === XMLHttpRequest.DONE && XHR.status === 200) {
+    let XHR = new XMLHttpRequest();
+    XHR.open('get', '/api/products/listProducts?category='+ category + '&page=' + page );
+    XHR.send();
+    XHR.addEventListener('readystatechange', function() {
+        console.log('Category: ' + category + ', Page: ' + page);
+        console.log(XHR);
+        if (XHR.readyState === XMLHttpRequest.DONE && XHR.status === 200) {
 
-             document.getElementById("listProducts").innerHTML = XHR.responseText;
-         }
-     });
- }
-
-
+            document.getElementById("listProducts").innerHTML = XHR.responseText;
+        }
+    });
+}
 
 
 

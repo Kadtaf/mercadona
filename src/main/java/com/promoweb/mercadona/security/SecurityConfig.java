@@ -28,17 +28,21 @@ public class SecurityConfig {
 
         return http.authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/products/catalogue", "/api/products/products", "/api/products/listProducts", "/webjars/**", "/jscript/**", "/assets/**", "/css/**", "/login").permitAll();
-                    auth.requestMatchers("/api/products/savePromotion", "/api/products/editProduct/**", "/api/products/deleteProduct/**", "/api/products/updateProduct/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
-                    auth.requestMatchers("/api/categories/formCategory/**", "/api/categories/**", "/api/categories/index", "/api/categories/saveCategory", "/api/categories/updateCategory/**", "/api/categories/delete/**", "/api/categories/allCategories").hasAnyRole("ADMIN", "SUPER_ADMIN");
-                    auth.requestMatchers("/api/users/updateUser/**", "/api/users/**", "/api/users/index", "/swagger-ui.html", "/api/users/listUser", "/api/users/updateUser/**").hasAnyRole("ADMIN", "SUPER_ADMIN");
+                    auth.requestMatchers("/api/products/savePromotion", "/api/products/editProduct/**", "/api/products/deleteProduct/**", "/api/products/updateProduct/**").hasAnyRole("ADMIN");
+                    auth.requestMatchers("/api/categories/formCategory/**", "/api/categories/**", "/api/categories/index", "/api/categories/saveCategory", "/api/categories/updateCategory/**", "/api/categories/delete/**", "/api/categories/allCategories").hasAnyRole("ADMIN");
+                    auth.requestMatchers("/api/users/updateUser/**", "/api/users/**", "/api/users/index", "/swagger-ui.html", "/api/users/listUser", "/api/users/updateUser/**", "/api/users/delete/**").hasAnyRole("ADMIN");
                     auth.anyRequest().authenticated();
 
                 }).formLogin(formLoginConfigurer -> formLoginConfigurer
-                        .loginPage("/login").permitAll()
+                        .loginPage("/login")
+                        .permitAll()
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/api/products/products", true)
+                        .failureUrl("/login?error=true")
+
                 )
-                .logout(logout -> logout
+
+                .logout(logoutConfigurer -> logoutConfigurer
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/api/products/products")
                         .invalidateHttpSession(true)

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="template.html">
 <head>
@@ -46,22 +45,15 @@
                                 <label for="category" class="form-label">Catégorie</label>
                                 <select class="form-select" id="category" name="existingCategoryId">
                                     <option value="" disabled selected hidden>Sélectionner une catégorie</option>
-                                    <!-- Boucle pour afficher les catégories existantes -->
                                     <option th:each="category : ${categories}"
                                             th:value="${category.getId()}"
                                             th:text="${category.getLabel()}"
                                             th:selected="${category.getId() == product.category.getId()}">
-
                                     </option>
                                 </select>
                             </div>
-                            <!-- Champ pour Ajouter une Nouvelle Catégorie -->
-                            <!--<div class="mb-3">
-                                <label for="newCategoryLabel" class="form-label">Nouvelle Catégorie</label>
-                                <input type="text" class="form-control" id="newCategoryLabel" name="newCategoryLabel">
-                            </div>-->
-
-                            <input type="text" class="form-control" name="id" th:value="${product.getId()}"/>
+                            <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}"/>
+                            <input type="hidden" class="form-control" name="id" th:value="${product.getId()}"/>
                             <button type="submit" class="btn btn-dark">Enregistrer</button>
                         </form>
                     </div>

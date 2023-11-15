@@ -1,14 +1,14 @@
 package com.promoweb.mercadona.model;
 
 
+
 import jakarta.persistence.*;
-import org.hibernate.Session;
-import org.springframework.data.jpa.provider.HibernateUtils;
+import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 
 @Entity
@@ -19,10 +19,12 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le label e doit pas être vide")
     private String label;
 
     @Column(name ="status")
-    private Boolean status;
+    private Boolean status = false;
+
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
     private List<Product> products = new ArrayList<>();
@@ -68,7 +70,7 @@ public class Category implements Serializable {
     public String toString() {
         return "Category{" +
                 "label='" + label + '\'' +
-                "products='" + products + '\'' +
+                //"products='" + products + '\'' +
                 '}';
     }
 

@@ -1,10 +1,11 @@
 package com.promoweb.mercadona.model;
 
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-
+//@JsonIgnoreProperties({"promotion", "category", "user"})
 @Entity
 @Table(name = "products")
 public class Product {
@@ -14,11 +15,11 @@ public class Product {
     private  Long id;
 
     @NotBlank(message = "Le champ label ne peut pas être vide")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?]+$", message = "Le label doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?À-ÿ-]+$", message = "Le texte doit contenir uniquement des lettres, des chiffres, des espaces, et des lettres avec accent.")
     public String label;
 
     @NotBlank(message = "Le champ description ne peut pas être vide")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?]+$", message = "Le texte doit contenir uniquement des lettres, des chiffres, des espaces et la ponctuation courante")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,_!'\" ?À-ÿ-]+$", message = "Le texte doit contenir uniquement des lettres, des chiffres, des espaces, et des lettres avec accent.")
     private String description;
 
     @NotNull(message = "Le champ prix ne peut pas être nul")
@@ -26,13 +27,16 @@ public class Product {
     private double prix;
     private String imagePath;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "promotion_id")
     private Promotion promotion;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -95,6 +99,16 @@ public class Product {
         return prix;
     }
 
+    public double getPrixPromotion() {
+
+        Promotion promotion = getPromotion();
+        if ( promotion !=null) {
+            return  prix * (1 - promotion.getDiscountPercentage() / 100);
+        }
+
+        return prix;
+    }
+
     public void setPrix(double prix, double discount) {
 
         if (discount != 0) {
@@ -141,9 +155,9 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", prix=" + prix +
                 ", image='" + imagePath + '\'' +
-                ", category=" + category +
-                ", promotion=" + promotion +
-                ", user=" + user +
+                //", category=" + category +
+                //", promotion=" + promotion +
+                //", user=" + user +
                 '}';
     }
 

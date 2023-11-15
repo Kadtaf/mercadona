@@ -2,6 +2,7 @@ package com.promoweb.mercadona.model;
 
 
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,16 +20,18 @@ public class Promotion {
     private LocalDate endDate;
     private double discountPercentage;
 
-    @OneToMany(mappedBy = "promotion")
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "promotion")
     private List<Product> products;
 
 
 
-    public Promotion(Long id, LocalDate startDate, LocalDate endDate, double discountPercentage) {
+    public Promotion(Long id, LocalDate startDate, LocalDate endDate, double discountPercentage, List<Product> products) {
         this.id =id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.discountPercentage = discountPercentage;
+        this.products = products;
 
     }
 
@@ -72,13 +75,23 @@ public class Promotion {
         this.discountPercentage = discountPercentage;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
     @Override
     public String toString() {
         return "Promotion{" +
-                "startDate=" + startDate +
+                "Id=" + id +
+                ",startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", discountPercentage=" + discountPercentage +
-                ", products=" + products +
                 '}';
     }
+
+
 }

@@ -12,6 +12,7 @@
 <body th:onload="|getProductsByCategory(${category} == null ? 0 : ${category}, ${page} == null ? 0 : ${page})|">
     <div layout:fragment="content">
         <div class="container mt-5">
+            <div id="alerts-container"></div>
             <div th:if="${error}" class="alert alert-danger p-3" th:name="error">
                 <p th:text="${error}"/>
             </div>
@@ -23,14 +24,12 @@
                 <div th:id="filterProducts" class="row">
                     <label th:for="selectCategory" class="col-auto mt-1">Filtre par catégorie :</label>
                     <div class="col-auto">
-                        <select th:id="selectCategory" class="form-select" th:onchange="getProductsByCategory(this.value)">
-                            <option value="">Choisir une catégorie</option>
-                            <option th:value="4">Décoration</option>
-                            <option th:value="2">Mécanique</option>
-                            <option th:value="5">Eléctricité</option>
-                            <option th:value="6">Beauté, Hygiène</option>
-                            <option th:value="7">Vêtement Homme</option>
-                            <option th:value="9">Informatique</option>
+                        <select th:id="selectCategory" name="categories" class="form-select" th:onchange="getProductsByCategory(this.value)">
+                            <option value="">Sélectionner une catégorie</option>
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.getId()}"
+                                    th:text="${category.getLabel()}">
+                            </option>
                             <option th:value="0">Touts les produits</option>
                         </select>
                     </div>
@@ -75,7 +74,7 @@
                                     <!-- <input type="number" class="form-control" id="discountPercentageModal" name="discountPercentage" required>-->
                                 </div>
                                 <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
-                                <input type="text" class="form-control" id="productIdModal" name="productId" required>
+                                <input type="hidden" class="form-control" id="productIdModal" name="productId" required>
                                 <button type="button" th:onclick="|savePromotion()|" class="btn btn-primary">Enregistrer</button>
                             </form>
                         </div>

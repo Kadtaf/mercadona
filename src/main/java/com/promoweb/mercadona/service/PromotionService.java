@@ -1,5 +1,6 @@
 package com.promoweb.mercadona.service;
 
+import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.repository.PromotionRepository;
@@ -23,25 +24,23 @@ public class PromotionService {
         return promotionRepository.findById(id).orElse(null);
     }
 
-    public void updatePromotion(Long id, Promotion promotion) {
-        Promotion existingPromotion = getPromotionById(id);
-        if (existingPromotion != null) {
-            existingPromotion.setStartDate(promotion.getStartDate());
-            existingPromotion.setEndDate(promotion.getEndDate());
-            existingPromotion.setDiscountPercentage(promotion.getDiscountPercentage());
+    public void updatePromotion(Promotion promotion) {
 
-            // Utilisez la méthode save pour sauvegarder et récupérer la promotion mise à jour
-             promotionRepository.save(existingPromotion);
+        promotionRepository.save(promotion);
+    }
+
+
+    public void deletePromotion(Long id, Promotion promotion) throws Exception {
+
+        List<Product> products = promotion.getProducts();
+        if (products != null && !products.isEmpty()) {
+            throw new Exception("Cette promotion est lié à des produits, elle ne peut pas être supprimé");
         } else {
-            throw new EntityNotFoundException("La promotion avec l'id : " + id + " n'existe pas");
+            promotionRepository.deleteById(id);
         }
 
     }
 
-
-    public void deletePromotion(Long id) {
-        promotionRepository.deleteById(id);
-    }
 
     public List<Promotion> getAllPromotions() {
         return promotionRepository.findAll();
@@ -49,20 +48,19 @@ public class PromotionService {
 
     public Page<Promotion> findPromotionsWithPagination(String kw, Pageable pageable) {
         if (kw == null || kw.trim().isEmpty()) {
-            // Si le mot-clé est vide, récupérez tous les promotions avec pagination
+
             return promotionRepository.findAll(pageable);
         } else {
-            // Si un mot-clé est fourni, recherchez les promotions par mot-clé avec pagination
-            return promotionRepository.findByStartDateContains(kw, pageable);
+
+            return promotionRepository.findByDiscountPercentageContains(kw, pageable);
         }
     }
 
-    public Promotion addPromotion(Promotion promotion) {
+    public void addPromotion(Promotion promotion) {
        if (isValidPromotion(promotion)) {
 
-        return promotionRepository.save(promotion);
+           promotionRepository.save(promotion);
        }
-       return null;
     }
 
     public boolean isValidPromotion(Promotion promotion) {

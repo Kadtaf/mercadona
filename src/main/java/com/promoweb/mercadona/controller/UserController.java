@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.transaction.Transactional;
 import java.util.List;
+
+@Transactional
 @Controller
 @RequestMapping("/api/users")
 public class UserController {
@@ -34,8 +38,8 @@ public class UserController {
                         @RequestParam(name = "page", defaultValue = "0") int page,
                         @RequestParam(name = "size", defaultValue = "4") int size,
                         @RequestParam(name = "keyword", defaultValue = "") String kw) {
-        // Utilisez votre méthode de recherche utilisateur avec pagination
-        Page<User> pageUsers = userService.findUsersWithPagination(kw, PageRequest.of(page, size));
+
+        Page<User> pageUsers = userService.findUsersWithPagination(kw, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
 
         model.addAttribute("users", pageUsers.getContent());
         model.addAttribute("pages", new int[pageUsers.getTotalPages()]);
@@ -57,7 +61,7 @@ public class UserController {
         if (user != null) {
             model.addAttribute("user", user);
             return "/users/editUser";
-            //ResponseEntity.ok(user);
+
         } else {
             throw new EntityNotFoundException("L'utilisateur avec l'id : " +id + " n'existe pas");
         }
@@ -80,7 +84,8 @@ public class UserController {
             return "/users/formUser";
         }
         try {
-            userService.createUser(user);
+            User createUser = userService.createUser(user);
+            model.addAttribute("createdUser", createUser);
             attributes.addFlashAttribute("message", "L'utilisateur a été créé avec succès");
 
             return "redirect:index";
@@ -92,7 +97,7 @@ public class UserController {
         return "redirect:index";
     }
 
-    // Liste des  utulisateurs
+
     @GetMapping("/listUser")
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
@@ -125,8 +130,8 @@ public class UserController {
         }
         try {
 
-            model.addAttribute("user", user);
-            userService.updateUser(id, user);
+            userService.updateUser(user);
+
             attributes.addFlashAttribute("message", "Mis à jour de l'administrateur' avec succès");
 
             return "redirect:../index";
@@ -145,17 +150,20 @@ public class UserController {
     public String deleteUser(@PathVariable Long id,
                              RedirectAttributes attributes) {
         try {
-            userService.deleteUser(id);
-            attributes.addFlashAttribute("message", "L'utilisateur a été supprimé avec succès");
-            return "redirect:../index";
+            User user = userService.getUserById(id);
+
+            Boolean status = !user.getStatus();
+            user.setStatus(status);
+            userService.setStatusUser(user);
+
+            String message = status ? "activée" : "désactivée";
+            attributes.addFlashAttribute("message", "L'utilisateur a été " + message + " avec succès");
+
         } catch (Exception e) {
             logger.warn("Problème est survenu lors de la suppression de l'utilisateur : {} ", e.getMessage());
-            attributes.addFlashAttribute("error", "Problème est survenu lors de la suppression de l'utilisateur");
+            attributes.addFlashAttribute("error", "Problème est survenu lors de la suppression de l'utilisateur "  + e.getMessage());
         }
         return "redirect:../index";
     }
-
-
-
 
 }

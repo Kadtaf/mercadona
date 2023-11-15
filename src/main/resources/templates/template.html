@@ -23,14 +23,14 @@
                     <li th:if="${#authorization.expression('permitAll()')}" class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/api/products/products}">Catalogue</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Promotion</a>
-                    </li>
                     <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
                         <a class="nav-link active" th:href="@{/api/users/index}" >Utilisateurs</a>
                     </li>
                     <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
                         <a class="nav-link active" th:href="@{/api/categories/index}" >Catégories</a>
+                    </li>
+                    <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
+                        <a class="nav-link active" th:href="@{/api/promotions/index}" >Promotions</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -56,7 +56,7 @@
                         <ul class="dropdown-menu" th:if="${#authorization.expression('!isAuthenticated')}">
                             <li>
                                 <!-- Ce bloc sera affiché seulement si personne n'est connecté -->
-                                <form th:method="post" th:action="@{/login}">
+                                <form th:method="get" th:action="@{/login}">
                                     <button class="dropdown-item" th:type="submit"><i class="bi bi-box-arrow-right"></i> Login</button>
                                 </form>
                             </li>
@@ -75,9 +75,9 @@
     <footer class="bg-dark text-center text-white">
         <div class="container p-4 pb-0">
             <section class="mb-4">
-                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i class="bi bi-facebook"></i></a>
-                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i class="bi bi-twitter"></i></a>
-                <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i class="bi bi-google"></i></a>
+                <a class="btn btn-outline-light btn-floating m-1" href="#" role="button"><i class="bi bi-facebook"></i></a>
+                <a class="btn btn-outline-light btn-floating m-1" href="#" role="button"><i class="bi bi-twitter"></i></a>
+                <a class="btn btn-outline-light btn-floating m-1" href="#" role="button"><i class="bi bi-google"></i></a>
             </section>
         </div>
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">

@@ -3,5 +3,26 @@
 }
 
 .custom-checkbox {
-    transform: scale(1.5);
+    transform: scale(2);
+}
+
+.form-check-input:not(:checked) {
+    background-color: #ffffff;
+    border-color: #1c1d1e;
+}
+
+.form-check-input:checked {
+    background-color: #072e8f;
+    border-color: #111311;
+}
+
+.alert-success {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    color: #1c1d1e;
+    font-weight: bold;
+    text-align: center;
+    background-color: #e6f4e6;
 }

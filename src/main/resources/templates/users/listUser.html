@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Utilisateurs </title>
+    <link th:href="@{/css/promo.css}" rel="stylesheet">
 </head>
 <body>
 <div layout:fragment="content">
@@ -25,7 +26,7 @@
                 <!-- Formulaire de recherche -->
                 <form method="GET" th:action="@{index}">
                     <label>Mot clé:</label>
-                    <input type="text" name="keyword" th:value="${keyword}">
+                    <input type="text" name="keyword" th:value="${kw}">
                     <button type="submit" class="btn btn-info">
                         <i class="bi bi-search"></i>
                     </button>
@@ -45,6 +46,7 @@
                         <th>Email</th>
                         <th>Role</th>
                         <th>Username</th>
+                        <th>status</th>
                         <th>Delete</th>
                         <th class="text-center">Edit</th>
                     </tr>
@@ -58,12 +60,14 @@
                         <td th:text="${u.email}"></td>
                         <td th:text="${u.role}"></td>
                         <td th:text="${u.username}"></td>
+                        <td>
+                            <input class="form-check-input custom-checkbox" type="checkbox" th:checked="${u.status}" disabled>
+                        </td>
                         <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                            <!-- Liens pour supprimer  un utilisateur -->
                             <a onclick="return confirm('Etes vous sure?')"
                                th:href="@{delete/{id}(id=${u.id})
-                                   }" class="btn btn-danger">
-                                <i class="bi bi-trash"></i>
+                                   }" th:class="${u.status} ?'btn btn-success': 'btn btn-danger'">
+                                <i th:text ="${u.status} ? 'Désactiver' : 'Activer'"></i>
                             </a>
                         </td>
                         <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
@@ -82,7 +86,7 @@
                     <li th:each="page,status:${pages}">
                         <a
                                 th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
-                                th:href="@{index(page=${status.index}, keyword=${keyword})}"
+                                th:href="@{index(page=${status.index}, keyword=${kw})}"
                                 th:text="${status.index + 1}">
                         </a>
                     </li>

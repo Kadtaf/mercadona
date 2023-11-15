@@ -11,7 +11,7 @@ VALUES
 INSERT INTO categories (label) VALUES ('Extenciles'), ('Mécanique'), (' Vêtements pour homme'), ('Décoration'), ('Electricité');
 
 -- Insertion des promotions
-INSERT INTO promotions (start_date, end_date, discount_percentage) VALUES ('2023-01-01', '2023-02-01', 15.0), ('2023-11-01', '2023-11-20', 25.0);
+INSERT INTO promotions (start_date, end_date, discount_percentage) VALUES ('01-01-2023', '01-02-2023', 15.0), ('01-11-2023', '20-11-2023', 25.0);
 
 -- Insertion de produits
 INSERT INTO products (label, description, prix, category_id, user_id, promotion_id)

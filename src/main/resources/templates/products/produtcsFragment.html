@@ -1,11 +1,11 @@
 <script th:inline="javascript">
-    /*<![CDATA[*/
+
 
     let globalCategory = [[${category}]];
     let globalPage = [[${currentPage}]];
     console.log(globalCategory + ' ' + globalPage);
 
-    /*]]>*/
+
 </script>
 <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
   <strong th:text="${errorMessage}"></strong>
@@ -17,14 +17,15 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${product.label}"></h5>
                     <p class="card-text" th:text="${product.description}"></p>
+                    <p class="card-text" th:inline="text" th:id="|priceId-${product.id}|">Prix : [[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</p>
                     <div th:if="${product.promotion != null}" class="card-text">
-                        <span class="card-text text-danger has-promotion" th:inline="text" th:id="|priceId-${product.id}|">[[${#numbers.formatDecimal(product.prix, 0, 'COMMA', 2, 'POINT')}]] €</span>
-                        <p class="card-text">Promotion :[[${product.promotion.discountPercentage}]] %</p>
-                        <p class="card-text">De : [[${product.promotion.startDate}]]</p>
+                        <p class="card-text has-promotion">Promotion : [[${product.promotion.discountPercentage}]] %</p>
+                        <p class="card-text has-promotion text-danger"> Nouveau Prix : [[${#numbers.formatDecimal(product.getPrixPromotion(), 0, 'COMMA', 2, 'POINT')}]] €</p>
+                        <p class="card-text">Du : [[${product.promotion.startDate}]]</p>
                         <p class="card-text">Au : [[${product.promotion.endDate}]]</p>
-                        <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
                     </div>
-                    <p class="card-text" th:unless="${product.promotion != null}">[[${product.prix}]] €</p>
+                    <p th:id="|promotionId-${product.id}|" class="card-text text-danger"></p>
+                    <p th:id="|newPriceId-${product.id}|" class="card-text"></p>
                 </div>
                 <div class="d-flex justify-content-evenly card-footer" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
                   <a th:href="@{editProduct/{id}(id=${product.id})}" class="btn btn-primary">
@@ -43,10 +44,10 @@
   <nav aria-label="Page navigation mt-5">
     <ul class="nav nav-pills">
       <li th:each="page,status:${pages}">
-          <button th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+          <input type="button" th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
                   th:onclick="|getProductsByCategory( ${category}, ${status.index})|"
-                  th:text="${status.index + 1}">
-          </button>
+                  th:value="${status.index + 1}">
+          </input>
       </li>
     </ul>
   </nav>

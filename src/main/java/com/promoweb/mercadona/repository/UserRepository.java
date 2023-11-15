@@ -10,5 +10,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByLastnameContains(String kw, Pageable pageable);
 
     User findByUsername(String username);
-
 }

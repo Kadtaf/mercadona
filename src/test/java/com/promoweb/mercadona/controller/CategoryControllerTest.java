@@ -1,20 +1,24 @@
 package com.promoweb.mercadona.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.service.CategoryService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -22,38 +26,80 @@ class CategoryControllerTest {
     @Mock
     private CategoryService categoryService;
 
+    @Mock
+    private Model model;
+
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
+    private RedirectAttributes redirectAttributes;
+
     @InjectMocks
     private CategoryController categoryController;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Test
-    void testUpdateCategory() throws Exception {
-        // Setup MockMvc
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+    void testIndex() {
+        // Mocking
+        when(categoryService.findCategoriesWithPagination(any(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(Collections.emptyList()));
 
-        // Create a sample category for testing
-        Long categoryId = 1L;
-        Category category = new Category();
-        category.setId(categoryId);
-        // Set other properties...
+        // Test
+        String viewName = categoryController.index(model, 0, 4, "");
 
-        // Mock categoryService.updateCategory to do nothing
-        doNothing().when(categoryService).updateCategory(category);
-
-        // Perform the request
-        ResultActions resultActions = mockMvc.perform(post("/api/categories/editCategory/{id}", categoryId)
-                .flashAttr("category", category));
-
-        // Validate the response
-        resultActions
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("../index"))
-                .andExpect(flash().attribute("message", "Mis à jour de la catégorie avec succès"));
-
-        // Verify that the updateCategory method was called
-        verify(categoryService, times(1)).updateCategory(category);
+        // Verify
+        assertEquals("/categories/listCategories", viewName);
     }
 
-    // Add more tests for other controller methods as needed...
+    @Test
+    void testGetCategoryById() {
+        // Mocking
+        when(categoryService.getCategoryById(Mockito.anyLong()))
+                .thenReturn(new Category());
+
+        // Test
+        String viewName = categoryController.getCategoryById(1L, model);
+
+        // Verify
+        assertEquals("/categories/editCategory", viewName);
+    }
+
+    @Test
+    void testUpdateCategory() {
+        // Mocking
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        // Test
+        String viewName = categoryController.updateCategory(1L, new Category(), bindingResult, redirectAttributes, model);
+
+        // Verify
+        assertEquals("redirect:../index", viewName);
+    }
+
+    @Test
+    void testCreateCategory() {
+        // Mocking
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        // Test
+        String viewName = categoryController.createCategory(new Category(), bindingResult, redirectAttributes, model);
+
+        // Verify
+        assertEquals("redirect:index", viewName);
+    }
+
+    @Test
+    void testDeleteCategory() {
+        // Mocking
+        when(categoryService.getCategoryById(Mockito.anyLong()))
+                .thenReturn(new Category());
+
+        // Test
+        String viewName = categoryController.deleteCategory(1L, redirectAttributes);
+
+        // Verify
+        assertEquals("redirect:../index", viewName);
+    }
+
+
 }

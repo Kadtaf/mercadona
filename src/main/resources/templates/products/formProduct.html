@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="template.html">
     <head>
@@ -17,10 +16,7 @@
                         <div class="card-body">
                             <div class="p-3">
                                 <form th:method="post" th:action="@{saveProduct}" th:object="${product}" enctype="multipart/form-data">
-                                    <div class="mb-3">
-                                        <label for="userId">ID:</label>
-                                        <input type="text" id="userId" name="userId" th:value="${userId}">
-                                    </div>
+                                        <input type="hidden" id="userId" name="userId" th:value="${userId}">
                                     <div class="mb-3">
                                         <label for="imageFile" class="form-label">Image du Produit</label>
                                         <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required>
@@ -54,6 +50,7 @@
                                             <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getLabel()}"></option>
                                         </select>
                                     </div>
+                                    <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}"/>
                                     <button type="submit" class="btn btn-dark">Ajouter le Produit</button>
                                 </form>
                             </div>

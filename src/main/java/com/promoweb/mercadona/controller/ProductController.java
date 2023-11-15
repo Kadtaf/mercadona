@@ -1,6 +1,8 @@
 package com.promoweb.mercadona.controller;
 
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promoweb.mercadona.exception.NoProductsFoundException;
 import com.promoweb.mercadona.model.Category;
 import com.promoweb.mercadona.model.Product;
@@ -15,8 +17,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,11 +30,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.persistence.EntityNotFoundException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -59,7 +62,11 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public String products() {
+    public String products(Model model) {
+
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("categories", categories);
+
         return "products/listProducts";
     }
 
@@ -69,7 +76,7 @@ public class ProductController {
                                   @RequestParam(name = "size", defaultValue = "5") int size,
                                   @RequestParam(name = "category", defaultValue ="0") Long category) {
         try {
-            Page<Product> pageProducts = productService.findProduct(category, PageRequest.of(page, size));
+            Page<Product> pageProducts = productService.findProduct(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
             model.addAttribute("products", pageProducts.getContent());
             model.addAttribute("pages", new int[pageProducts.getTotalPages()]);
             model.addAttribute("currentPage", page);
@@ -140,7 +147,6 @@ public class ProductController {
                                 @RequestParam(name = "newCategoryLabel", required = false) String newCategoryLabel,
                                 @RequestParam(name = "imageFile", required = false) MultipartFile imageFile,
                                 Model model) {
-        //model.addAttribute("product", new Product());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("errors", bindingResult.getAllErrors());
@@ -166,8 +172,6 @@ public class ProductController {
             // Gestion des erreurs spécifiques à la création du produit
             logger.error("Une erreur s'est produite lors de la création du produit." + e.getMessage());
             attributes.addFlashAttribute("message", "Une erreur s'est produite lors de la création du produit.");
-           // model.addAttribute("error", "Une erreur s'est produite lors de la création du produit.");
-
         }
         return "redirect:products";
     }
@@ -181,28 +185,28 @@ public class ProductController {
             if (product != null) {
                 model.addAttribute("product", product);
 
-                // Récupérer toutes les catégories de la base de données
                 List<Category> categories = categoryService.getAllCategories();
 
-                // Ajouter les catégories au modèle pour les rendre disponibles dans la vue Thymeleaf
                 model.addAttribute("categories", categories);
 
-                return "products/editProduct"; // Thymeleaf template name pour afficher le formulaire de mise à jour
+                return "products/editProduct";
             } else {
                 throw new EntityNotFoundException("Le produit avec l'id : " + id + " n'existe pas");
             }
         } catch (EntityNotFoundException e) {
-            // Gestion spécifique de l'exception EntityNotFoundException
+
             logger.warn("Produit non trouvé: {}", e.getMessage());
             model.addAttribute("error", "Produit non trouvé.");
             return "/errors/error";
+
         } catch (Exception e) {
-            // Gestion générale des erreurs
+
             logger.error("Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.", e);
             model.addAttribute("error", "Une erreur s'est produite lors de l'affichage du formulaire de mise à jour.");
             return "/errors/error";
         }
     }
+
     @PostMapping("/editProduct/{id}")
     public String updateProduct(@PathVariable Long id,
                                 @ModelAttribute @Valid Product product,
@@ -316,14 +320,15 @@ public class ProductController {
     @PostMapping("/savePromotion")
     @ResponseBody
     public Product savePromotion(@RequestParam Long productId,
-                                 @RequestParam String startDate,
-                                 @RequestParam String endDate,
-                                 @RequestParam double discountPercentage) {
+                                                 @RequestParam String startDate,
+                                                 @RequestParam String endDate,
+                                                 @RequestParam double discountPercentage) {
         Promotion promotion = new Promotion(LocalDate.parse(startDate), LocalDate.parse(endDate), discountPercentage);
         promotionService.addPromotion(promotion);
+
         Product product = productService.getProductById(productId);
         product.setPromotion(promotion);
-        product.setPrix(product.getPrix(), discountPercentage);
+        //product.setPrix(product.getPrix(), discountPercentage);
 
         productService.updateProduct(productId, product);
 

@@ -50,33 +50,29 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Utilisation de th:each pour parcourir la liste d'utilisateurs -->
-                    <tr th:each="c:${categories}">
-                        <td th:text="${c.id}"></td>
-                        <td th:text="${c.label}"></td>
-                        <td>
-                            <input class="form-check-input custom-checkbox" type="checkbox" th:checked="${c.status}" id="flexCheckChecked" disabled>
-                        </td>
+                        <tr th:each="c:${categories}">
+                            <td th:text="${c.id}"></td>
+                            <td th:text="${c.label}"></td>
+                            <td>
+                                <input class="form-check-input custom-checkbox" type="checkbox" th:checked="${c.status}" id="flexCheckChecked" disabled>
+                            </td>
 
-                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 
-                            <a onclick="return confirm('Etes vous sure?')"
-                               th:href="@{delete/{id}(id=${c.id})
-                                   }" th:class="${c.getStatus()} ?'btn btn-success': 'btn btn-danger'">
-                                <i th:text ="${c.getStatus()} ? 'Désactiver' : 'Activer'"></i>
-                            </a>
-
-
-
-                        </td>
-                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
-                            <!-- Liens pour editer  un utilisateur -->
-                            <input type="hidden" name="categoryId" th:value="${c.id}" />
-                            <a class="btn btn-success ml-4" th:href="@{editCategory/{id}(id=${c.id})}">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                        </td>
-                    </tr>
+                                <a onclick="return confirm('Etes vous sure?')"
+                                   th:href="@{delete/{id}(id=${c.id})
+                                       }" th:class="${c.getStatus()} ?'btn btn-success': 'btn btn-danger'">
+                                    <i th:text ="${c.getStatus()} ? 'Désactiver' : 'Activer'"></i>
+                                </a>
+                            </td>
+                            <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
+                                <!-- Liens pour editer  un utilisateur -->
+                                <input type="hidden" name="categoryId" th:value="${c.id}" />
+                                <a class="btn btn-success ml-4" th:href="@{editCategory/{id}(id=${c.id})}">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 

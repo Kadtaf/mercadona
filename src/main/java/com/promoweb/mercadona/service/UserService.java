@@ -25,12 +25,10 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-
         return userRepository.findById(id).orElse(null);
     }
 
     public User createUser(User user) {
-        // Validation de traitement avant d'enregistrer dans la base de données
         validateUser(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -40,43 +38,23 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void updateUser(Long id, User user) throws EntityNotFoundException {
-        User existingUser = getUserById(id);
-        if (existingUser != null) {
-            // Validation de traitement avant d'enregistrer dans la base de données
-           // validateUser(user);
-            // Mettez à jour d'autres champs si nécessaire
-            existingUser.setUsername(user.getUsername());
-            existingUser.setFirstname(user.getFirstname());
-            existingUser.setLastname(user.getLastname());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setRole(user.getRole());
-            //Hashé le mot de passe s'il est fournit
-            if (user.getPassword() != null) {
-                existingUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            }
-            userRepository.save(existingUser);
-        } else {
-            throw new EntityNotFoundException("L'Administrateur avec l'id : " + id + " n'existe pas");
-        }
-
+    public void updateUser(User user){
+       user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+       userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id) throws EntityNotFoundException {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         } else {
             throw new EntityNotFoundException("L'utilisateur avec l'id : " + id + " n'existe pas");
         }
-
     }
 
-    //Méthode de validation du formulaire
     private void validateUser(User user) {
         if (user.getUsername() == null || user.getPassword() == null) {
             throw new IllegalArgumentException("Nom d'utilisateur et mot de passe sont obligatoires");
         }
-        //Vériier l'unicité du nom d'utilisateur
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new IllegalArgumentException("Le nom d'utilisateur est déjà pris");
         }
@@ -84,18 +62,18 @@ public class UserService {
 
     public Page<User> findUsersWithPagination(String kw, Pageable pageable) {
         if (kw == null || kw.trim().isEmpty()) {
-            // Si le mot-clé est vide, récupérez tous les utilisateurs avec pagination
             return userRepository.findAll(pageable);
         } else {
-            // Si un mot-clé est fourni, recherchez les utilisateurs par mot-clé avec pagination
             return userRepository.findByLastnameContains(kw, pageable);
         }
     }
 
     public Long getIdUserByUsername(String username) {
-
         User user = userRepository.findByUsername(username);
         return user.getId();
     }
 
+    public void setStatusUser(User user) {
+        userRepository.save(user);
+    }
 }

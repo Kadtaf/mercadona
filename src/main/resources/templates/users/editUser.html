@@ -56,14 +56,14 @@
                             </div>
                             <div class="mb-3 mt-3">
                                 <label for="password" class="form-label">Mot de passe:</label>
-                                <input type="password" class="form-control" id="password" placeholder="Password" name="password" th:value="${user.password}" th:field="*{password}">
+                                <input th:type="password" class="form-control" id="password" placeholder="Password" name="password" th:value="${user.password}" th:field="*{password}">
                                 <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger">
                                     <p th:errors="*{password}">Erreur de mot de passe</p>
                                 </div>
                             </div>
 
-                            <input type="hidden" name="_method" value="PUT" />
-                            <input type="hidden" name="id" th:value="${user.id}" />
+                            <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
+                            <input th:type="hidden" class="form-control" name="id" th:value="${user.getId()}" th:field="*{id}"/>
                             <button class="btn btn-success">Mettre à jour</button>
                         </form>
                     </div>

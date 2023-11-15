@@ -1,6 +1,7 @@
 package com.promoweb.mercadona.model;
 
 
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,10 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -24,24 +22,31 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank(message = "Le prénom ne peut pas être vide")
+    @Size(min = 3, message = "Le prénom doit contenir au minimum 3 caractères")
     private String firstname;
 
     @NotBlank(message = "Le nom ne peut pas être vide")
+    @Size(min = 3, message = "Le nom doit contenir au minimum 3 caractères")
     private String lastname;
 
     @Email(message = "L'adresse e-mail doit être valide")
-
     private String email;
     @NotBlank(message = "Le nom d'utilisateur ne peut pas être vide")
     private String username;
 
+
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z0-9@$!%*#?&]{8,}$", message = "Le mot de passe  doit contenir au minimum 8 caractères, lettres, chiffres et caractères spéciaux au maximum 12")
     private String password;
+
+    @NotBlank(message = "Le rôle ne peut pas être vide")
+    @Size(min = 5, message = "Le rôle doit contenir au minimum 5 caractères")
     private String role;
 
+    @Column(name ="status")
+    private Boolean status = false;
 
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Product> products;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Product> products = new ArrayList<>();
 
     public User() {
     }
@@ -112,6 +117,14 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -140,13 +153,18 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "ID=" + id + '\'' +
+                ",username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", products=" + products +
+                ", email='" + email + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", status=" + status + '\'' +
                 '}';
     }
 
-    public void setId(Long userId) {
+    public void setId(Long id) {
         this.id=id;
     }
+
+
 }

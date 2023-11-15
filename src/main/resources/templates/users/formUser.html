@@ -14,37 +14,50 @@
                 <div class="card-header">Création d'un utilisateur</div>
                 <div class="card-body">
                     <div class="p-1">
-                        <form method="post" th:action="@{saveUser}">
+                        <form method="post" th:action="@{saveUser}" th:object="${user}">
                             <div class="mb-3 mt-3">
                                 <label for="lastname" class="form-label">Nom:</label>
-                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname">
-                                <span class="text-danger" th:errors="${user.lastname}" th:value="${user.lastname}"></span>
+                                <input type="text" class="form-control" id="lastname" placeholder="Nom" name="lastname" th:field="*{lastname}">
+                                <div th:if="${#fields.hasErrors('lastname')}" class="alert alert-danger">
+                                    <p th:errors="*{lastname}"></p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="firstname" class="form-label">Prenom:</label>
-                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname">
-                                <span class="text-danger" th:errors="${user.firstname}" th:value="${user.firstname}"></span>
+                                <input type="text" class="form-control" id="firstname" placeholder="Prenom" name="firstname" th:field="*{firstname}">
+                                <div th:if="${#fields.hasErrors('firstname')}" class="alert alert-danger">
+                                    <p th:errors="*{firstname}"></p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" name="email">
-                                <span class="text-danger" th:errors="${user.email}" th:value="${user.email}"></span>
+                                <input type="text" class="form-control" id="email" placeholder="Email" name="email" th:field="*{email}">
+                                <div th:if="${#fields.hasErrors('email')}" class="alert alert-danger">
+                                    <p th:errors="*{email}"></p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="role" class="form-label">Rôle:</label>
-                                <input type="text" class="form-control" id="role" placeholder="role" name="role">
-                                <span class="text-danger" th:errors="${user.role}" th:value="${user.role}"></span>
+                                <input type="text" class="form-control" id="role" placeholder="role" name="role" th:field="*{role}">
+                                <div th:if="${#fields.hasErrors('role')}" class="alert alert-danger">
+                                    <p th:errors="*{role}"></p>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label">Nom d'utilisateur:</label>
-                                <input type="text" class="form-control" id="username" placeholder="Username" name="username">
-                                <span class="text-danger" th:errors="${user.username}" th:value="${user.username}"></span>
+                                <input type="text" class="form-control" id="username" placeholder="Username" name="username" th:field="*{username}">
+                                <div th:if="${#fields.hasErrors('username')}" class="alert alert-danger">
+                                    <p th:errors="*{username}"></p>
+                                </div>
                             </div>
                             <div class="mb-3 mt-3">
                                 <label for="password" class="form-label">Mot de passe:</label>
-                                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
-                                <span class="text-danger" th:errors="${user.password}" th:value="${user.password}"></span>
+                                <input type="password" class="form-control" id="password" placeholder="Password" name="password" th:field="*{password}">
+                                <div th:if="${#fields.hasErrors('password')}" class="alert alert-danger">
+                                    <p th:errors="*{password}"></p>
+                                </div>
                             </div>
+                            <input th:type="hidden" th:name="_csrf" th:value="${_csrf.token}">
                             <button type="submit" class="btn btn-primary">Enregistrez</button>
                         </form>
                     </div>
