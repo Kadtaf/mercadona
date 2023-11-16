@@ -73,7 +73,7 @@ public class ProductController {
     @GetMapping("/listProducts")
     public String listAllProducts(Model model,
                                   @RequestParam(name = "page", defaultValue = "0") int page,
-                                  @RequestParam(name = "size", defaultValue = "5") int size,
+                                  @RequestParam(name = "size", defaultValue = "10") int size,
                                   @RequestParam(name = "category", defaultValue ="0") Long category) {
         try {
             Page<Product> pageProducts = productService.findProduct(category, PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));

@@ -1,6 +1,6 @@
 package com.promoweb.mercadona.controller;
 
-import com.promoweb.mercadona.model.Category;
+import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.service.ProductService;
 import com.promoweb.mercadona.service.PromotionService;
@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,12 +27,14 @@ import java.util.List;
 @RequestMapping("/api/promotions")
 public class PromotionController {
 
+    private final ProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final PromotionService promotionService;
 
     @Autowired
-    public PromotionController(PromotionService promotionService, ProductService productService) {
+    public PromotionController(PromotionService promotionService, ProductService productService, ProductService productService1) {
         this.promotionService = promotionService;
+        this.productService = productService1;
     }
 
     @GetMapping("/index")
@@ -118,20 +122,16 @@ public class PromotionController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deletePromotion(@PathVariable Long id,
-                                  Promotion promotion,
-                                  RedirectAttributes attributes){
-
+    @ResponseBody
+    public ResponseEntity<String> deletePromotion(@PathVariable Long id) {
         try {
-            promotionService.deletePromotion(id, promotion);
-            attributes.addFlashAttribute("message", "La promotion a été supprimé avec succès");
-        } catch (Exception e){
+
+            promotionService.deletePromotion(id);
+            return ResponseEntity.ok("La promotion a été supprimée avec succès");
+        } catch (Exception e) {
             logger.warn("Problème est survenu lors de la suppression de la promotion : {} ", e.getMessage());
-
-            attributes.addFlashAttribute("error", "Cette promotion est lié à des produits, elle ne peut pas être supprimé" );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de la suppression de la promotion :"+ e.getMessage());
         }
-
-        return "redirect:../index";
     }
 
 }

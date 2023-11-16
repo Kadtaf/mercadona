@@ -1,9 +1,7 @@
 package com.promoweb.mercadona.model;
 
-
-
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,12 +17,8 @@ public class Promotion {
     private LocalDate startDate;
     private LocalDate endDate;
     private double discountPercentage;
-
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "promotion")
     private List<Product> products;
-
-
 
     public Promotion(Long id, LocalDate startDate, LocalDate endDate, double discountPercentage, List<Product> products) {
         this.id =id;
@@ -45,7 +39,6 @@ public class Promotion {
     public Promotion() {
 
     }
-
 
     public Long getId() {
         return id;
@@ -92,6 +85,5 @@ public class Promotion {
                 ", discountPercentage=" + discountPercentage +
                 '}';
     }
-
 
 }

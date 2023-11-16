@@ -5,12 +5,9 @@ function showPromotionForm(productId, productPrice) {
 
     $('#priceModal').val(productPrice.toFixed(2));
 
-    // $('#addPromotionModal').style.display = 'block';
-
 }
 
 
-//document.getElementById('addPromotionModal').addEventListener('submit', savePromotion());
 function savePromotion() {
     let globalCategory;
     let selectCategory = $('#selectCategory').val();
@@ -33,8 +30,8 @@ function savePromotion() {
     let datas = new FormData(form);
 
 
-     let newPrice = productPrice * (1 - discountPercentage / 100);
-      $('#priceId-' + productId).text('Prix : ' + newPrice.toFixed(2));
+    let newPrice = productPrice * (1 - discountPercentage / 100);
+    $('#priceId-' + productId).text('Prix : ' + newPrice.toFixed(2));
 
 
 
@@ -92,12 +89,12 @@ function savePromotion() {
         let code_label = http_error.statusText;
         alert("Erreur "+code+" ("+code_label+") : "  + server_msg);
     });
-/*
-    request.always(function () {
+    /*
+        request.always(function () {
 
-        getProductsByCategory(globalCategory, globalPage);
-    });
-    */
+            getProductsByCategory(globalCategory, globalPage);
+        });
+        */
 
 }
 
@@ -115,8 +112,3 @@ function getProductsByCategory(category, page=0) {
         }
     });
 }
-
-
-
-
-

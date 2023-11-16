@@ -5,7 +5,7 @@ INSERT INTO users (lastname, firstname, email, role, username, password)
 VALUES
        ('Zakary', 'Jack','jack.z@gmail.com','USER','jack_z', '$2y$10$.qkbukzzX21D.bqbI.B2R.tvWP90o/Y16QRWVLodw51BHft7ZWbc.'),
        ('Tamota', 'Jhon', 'jhon.t@gmx.com', 'ADMIN','jhon_t', '$2y$10$kp1V7UYDEWn17WSK16UcmOnFd1mPFVF6UkLrOOCGtf24HOYt8p1iC'),
-       ('TOTO', 'Jack', 'jack.z@gmail.com', 'ADMIN','admin', '$2a$10$u/t./VO.HFFhOIl3mxMCiOn.VeF.b0gGL8pyQOYJ4veynt0jtN45e');
+       ('admin', 'admin', 'admin@example.com', 'ADMIN','admin', '$2a$10$u/t./VO.HFFhOIl3mxMCiOn.VeF.b0gGL8pyQOYJ4veynt0jtN45e');
 
 -- Insertion de catégories
 INSERT INTO categories (label) VALUES ('Extenciles'), ('Mécanique'), (' Vêtements pour homme'), ('Décoration'), ('Electricité');

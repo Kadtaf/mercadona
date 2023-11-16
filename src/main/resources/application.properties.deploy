@@ -1,10 +1,8 @@
 #Configuration de la base de données
-spring.datasource.url= jdbc:postgresql://postgresql-taftaf.alwaysdata.net/taftaf_mercadona
-spring.datasource.username=taftaf_mercadona
-spring.datasource.password=mercadona@studi
+spring.datasource.url= jdbc:postgresql://postgresql-taftaf.alwaysdata.net/NAME-DATA-BASE
+spring.datasource.username=USERNAME
+spring.datasource.password=PASSWORD
 spring.jpa.open-in-view=false
-
-
 
 #Configuration Hibernate (JPA)
 spring.jpa.database-platform= org.hibernate.dialect.PostgreSQLDialect

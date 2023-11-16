@@ -12,10 +12,10 @@
 <div layout:fragment="content">
     <div class="p-3" sec:authorize="isAuthenticated()">
         <div class="card">
-            <div th:if="${error}" class="alert alert-danger p-3" th:name="error">
+            <div th:if="${error}" class="alert alert-danger text-center p-3" th:name="error">
                 <p th:text="${error}"/>
             </div>
-            <div th:if="${message}" class="alert alert-success p-3" th:name="message">
+            <div th:if="${message}" class="alert alert-success text-center p-3" th:name="message">
                 <p th:text="${message}"/>
             </div>
 
@@ -66,7 +66,6 @@
                                 </a>
                             </td>
                             <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="text-center">
-                                <!-- Liens pour editer  un utilisateur -->
                                 <input type="hidden" name="categoryId" th:value="${c.id}" />
                                 <a class="btn btn-success ml-4" th:href="@{editCategory/{id}(id=${c.id})}">
                                     <i class="bi bi-pencil"></i>

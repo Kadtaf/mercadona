@@ -5,6 +5,7 @@ import com.promoweb.mercadona.model.Product;
 import com.promoweb.mercadona.model.Promotion;
 import com.promoweb.mercadona.repository.PromotionRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,16 +31,13 @@ public class PromotionService {
     }
 
 
-    public void deletePromotion(Long id, Promotion promotion) throws Exception {
+    public void deletePromotion(Long id) {
 
-        List<Product> products = promotion.getProducts();
-        if (products != null && !products.isEmpty()) {
-            throw new Exception("Cette promotion est lié à des produits, elle ne peut pas être supprimé");
-        } else {
-            promotionRepository.deleteById(id);
-        }
+        promotionRepository.findById(id);
 
+        promotionRepository.deleteById(id);
     }
+
 
 
     public List<Promotion> getAllPromotions() {

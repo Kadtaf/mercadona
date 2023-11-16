@@ -130,7 +130,7 @@ public class CategoryController {
         } catch(Exception e){
             logger.warn("Problème est survenu lors de la suppression de l'utilisateur : {} ", e.getMessage());
 
-            attributes.addFlashAttribute("error", "Problème est survenu lors de la désactivation  de la catégorie: " + e.getMessage());
+            attributes.addFlashAttribute("error", "Cette catégorie est lié à des produits, elle ne peut pas être désactivée");
         }
         return "redirect:../index";
     }

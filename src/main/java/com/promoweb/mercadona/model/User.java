@@ -35,7 +35,7 @@ public class User implements UserDetails {
     private String username;
 
 
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z0-9@$!%*#?&]{8,}$", message = "Le mot de passe  doit contenir au minimum 8 caractères, lettres, chiffres et caractères spéciaux au maximum 12")
+    @Pattern(regexp ="^(?=.*[@$!%*#?&])?.{8,}$", message = "Le mot de passe  doit contenir au minimum 8 caractères, lettres, chiffres et caractères spéciaux")
     private String password;
 
     @NotBlank(message = "Le rôle ne peut pas être vide")

@@ -23,10 +23,16 @@ Maven est un outil de gestion de projet pour Java. Suivez ces étapes pour l'ins
 Vous aurez besoin du code source de l'application, suivez ces étapes :
 
 - Cliquez sur le bouton "Code" en haut de cette page.
-- Sélectionnez "Download ZIP".
+- Sélectionnez "Download ZIP"(ou vous pouvez clonez le projet en utilisant "https://github.com/Kadtaf/mercadona.git").
 - Extrayez le contenu du fichier ZIP sur votre ordinateur.
 
-## 4. Configurer la Base de Données PostgreSQL
+## 4. Accés à la Base de Données distante Always Data:
+    -Rendez-vous sur le lien: https://phppgadmin.alwaysdata.com/
+    -Entrez le username et le mot de passe que je vous ai fourni dans la page 1 de mon projet.
+    -Si vous avez réussi à se connecter à la base de données, passez directement à l'étape:6
+    - En cas d'échec de connexion à la base de données à distance continuez les étape ci-dessous.
+
+## 5. Configurer la Base de Données PostgreSQL en locale en cas d'échec de connexion à la base de données distante:
 
 Avant de lancer l'application, vous devez configurer la base de données. Suivez ces étapes :
 
@@ -34,11 +40,11 @@ Avant de lancer l'application, vous devez configurer la base de données. Suivez
 
 - Lors de l'installation, notez votre nom d'utilisateur PostgreSQL et votre mot de passe.
 
-## 5. Ouvrir une Invite de Commande
+## 6. Ouvrir une Invite de Commande
 
 Ouvrez l'invite de commande sur votre ordinateur. Si vous ne savez pas comment faire, demandez de l'aide à quelqu'un de votre entourage ou faites une recherche rapide en ligne.
 
-## 6. Naviguer vers le Dossier de l'Application
+## 7. Naviguer vers le Dossier de l'Application
 
 Utilisez la commande `cd` pour naviguer vers le dossier où vous avez extrait le code source. Par exemple :
 
@@ -47,7 +53,7 @@ cd chemin/vers/mercadona-app
 
 ## 8. Configurer les Paramètres de la Base de Données
 
-Ouvrez le fichier `src/main/resources/application.properties` avec un éditeur de texte (comme Bloc-notes ou Visual Studio Code). Trouvez les lignes suivantes et remplacez les valeurs entre les guillemets par vos propres informations PostgreSQL :
+Ouvrez le fichier `src/main/resources/application.properties` avec un éditeur de texte (comme Bloc-notes ou Visual Studio Code) ou vous pouvez aussi ouvrire le projet avec un IDE comme Intelliji ou Eclips. Trouvez les lignes suivantes et remplacez les valeurs entre les guillemets par vos propres informations PostgreSQL :
 
 **properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/votre_base_de_donnees
@@ -61,17 +67,17 @@ mvn clean install
 ## 10. Lancer l'application
 Maintenant, vous êtes prêt à lancer l'application. Entrez la commande suivante:
 bash
-java -jar target/mercadona-app.jar
+java -jar target/mercadona.jar
 
 L'application devrait maintenant être accessible à l'adresse http://localhost/8080 depuis votre navigateur web.
 
 ## 11. Configuration de l'Authentification
 
-L'application Mercadona utilise Spring Security pour gérer l'authentification. Après le déploiement, vous devrez vous connecter avec un compte utilisateur existant ou créer un nouveau compte.
+L'application Mercadona utilise Spring Security pour gérer l'authentification. Après le déploiement, vous devrez vous connecter avec un compte utilisateur existant.
 
 ### Comptes Utilisateur par Défaut
 
-Lors du déploiement local à des fins de test, vous pouvez utiliser les comptes utilisateur par défaut :
+Lors du déploiement local à des fins de test, vous pouvez utiliser le compte utilisateur par défaut :
 
 - **Username :** admin
 - **Mot de Passe :** admin
@@ -79,7 +85,7 @@ Lors du déploiement local à des fins de test, vous pouvez utiliser les comptes
 ### Création d'un Nouveau Compte
 
 1. Connectez-vous à l'application en utilisant les identifiants par défaut.
-2. Accédez à la page de gestion du compte ou du profil(Volet: Utilisateurs).
+2. Accédez à la page de gestion du compte(Volet: Utilisateurs).
 3. Cliquez sur le bouton "Nouveau utilisateur".
 4. Entrez votre nouveau nom d'utilisateur et mot de passe.
 5. Validez et utilisez vos nouveaux identifiants pour vous connecter.
@@ -120,7 +126,7 @@ Félicitations pour avoir réussi la connexion! Vous pouvez maintenant explorer 
 1. **Ajout d'une Promotion :**
    - Dirigez-vous vers la section "catalogue".
    - Optez pour l'ajout d'une nouvelle promotion.
-   - Cliquez sue le bouton "AddPromo"
+   - Cliquez sue le bouton "Add Promo"
    - Spécifiez les détails de la promotion (réduction, Date de début, Date de fin.).
    - Enregistrez la promotion.
 

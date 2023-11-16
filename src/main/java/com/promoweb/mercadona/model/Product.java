@@ -4,6 +4,10 @@ package com.promoweb.mercadona.model;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.SQLDelete;
+
+import static org.hibernate.annotations.OnDeleteAction.SET_NULL;
 
 //@JsonIgnoreProperties({"promotion", "category", "user"})
 @Entity
@@ -99,6 +103,8 @@ public class Product {
         return prix;
     }
 
+
+
     public double getPrixPromotion() {
 
         Promotion promotion = getPromotion();
@@ -144,6 +150,7 @@ public class Product {
     }
 
     public void setPromotion(Promotion promotion) {
+
         this.promotion = promotion;
     }
 
